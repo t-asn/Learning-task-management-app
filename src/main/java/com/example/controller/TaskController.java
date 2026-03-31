@@ -6,11 +6,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.util.List;
 
 @Controller
-@RequestMapping("/tasks")
+@RequestMapping("/")
 public class TaskController {
 
   private final TaskService taskService;
@@ -40,7 +39,7 @@ public class TaskController {
   public String save(@ModelAttribute Task task, RedirectAttributes ra) {
     taskService.saveTask(task);
     ra.addFlashAttribute("message", "タスクを保存しました");
-    return "redirect:/tasks";
+    return "redirect:/";
   }
 
   @GetMapping("/edit")
@@ -53,6 +52,6 @@ public class TaskController {
   public String delete(@RequestParam Integer taskId, RedirectAttributes ra) {
     taskService.deleteTask(taskId);
     ra.addFlashAttribute("message", "タスクを削除しました");
-    return "redirect:/tasks";
+    return "redirect:/";
   }
 }
