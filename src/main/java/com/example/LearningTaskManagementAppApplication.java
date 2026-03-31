@@ -1,4 +1,4 @@
-package com.example.Learning.task.management.app;
+package com.example;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class LearningTaskManagementAppApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(LearningTaskManagementAppApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(LearningTaskManagementAppApplication.class, args);
+  }
 
 }
