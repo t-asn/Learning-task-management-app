@@ -20,16 +20,21 @@
             <input th:field="*{id}" type="hidden">
 
             <div class="mb-3">
-              <label class="form-label">タイトル</label>
-              <input class="form-control" placeholder="例：Spring MVCの復習" required
-                     th:field="*{title}" type="text">
+              <label class="form-label">カテゴリ</label>
+              <select class="form-select" th:errorclass="is-invalid" th:field="*{category}">
+                <option value="">選択してください</option>
+                <option th:each="cat : ${categories}" th:text="${cat}" th:value="${cat}"></option>
+              </select>
+              <div class="invalid-feedback" th:errors="*{category}"
+                   th:if="${#fields.hasErrors('category')}"></div>
             </div>
 
             <div class="mb-3">
-              <label class="form-label">カテゴリ</label>
-              <select class="form-select" th:field="*{category}">
-                <option th:each="cat : ${categories}" th:text="${cat}" th:value="${cat}"></option>
-              </select>
+              <label class="form-label">タイトル</label>
+              <input class="form-control" th:errorclass="is-invalid" th:field="*{title}"
+                     type="text">
+              <div class="invalid-feedback" th:errors="*{title}"
+                   th:if="${#fields.hasErrors('title')}"></div>
             </div>
 
             <div class="mb-3">

@@ -58,18 +58,15 @@ public class TaskController {
   /**
    * タスクの保存処理を行い、一覧画面へリダイレクトする。
    * @param task フォームデータ
-   * @param ra フラッシュメッセージ用
    * @return 一覧画面へのリダイレクト (/tasks)
    */
   @PostMapping("/save")
-  public String save(@Validated @ModelAttribute Task task, BindingResult result, RedirectAttributes ra) {
+  public String save(@Validated @ModelAttribute Task task, BindingResult result, Model model) {
     if (result.hasErrors()) {
-      ra.addFlashAttribute("message", "入力内容に誤りがあります。");
       return "tasks/form";
     }
-    
+
     taskService.saveTask(task);
-    ra.addFlashAttribute("message", "タスクを保存しました");
     return "redirect:/tasks";
   }
 
