@@ -8,14 +8,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
- * タスク管理機能の画面制御を行うコントローラー。
- * 一覧表示、新規登録、編集、削除の各リクエストを処理します。
+ * タスク管理機能の画面制御を行うコントローラー。 一覧表示、新規登録、編集、削除の各リクエストを処理します。
  */
 @Controller
-@RequestMapping("/tasks") // ベースパスを /tasks に設定
+@RequestMapping("/tasks")
 public class TaskController {
 
   private final TaskService taskService;
@@ -26,6 +28,7 @@ public class TaskController {
 
   /**
    * 各画面で共通して使用するカテゴリリストをModelに登録する。
+   *
    * @return カテゴリ名のリスト
    */
   @ModelAttribute("categories")
@@ -35,6 +38,7 @@ public class TaskController {
 
   /**
    * タスク一覧画面を表示する。
+   *
    * @param model 画面に渡すデータを格納するModelオブジェクト
    * @return タスク一覧画面のビュー名 (tasks/list)
    */
@@ -46,6 +50,7 @@ public class TaskController {
 
   /**
    * タスク新規登録画面を表示する。
+   *
    * @param model 新規作成用の空のTaskオブジェクト
    * @return タスク登録画面のビュー名 (tasks/form)
    */
@@ -56,46 +61,60 @@ public class TaskController {
   }
 
   /**
-   * タスクの保存処理を行い、一覧画面へリダイレクトする。
-   * @param task フォームデータ
-   * @return 一覧画面へのリダイレクト (/tasks)
+   * タスクの編集画面を表示する。 IDが存在しない場合は、メッセージを表示して一覧画面へリダイレクトする。
+   *
+   * @param taskId 編集対象のタスクID
+   * @param model  取得したタスクデータを格納するModel
+   * @param ra     リダイレクト時のフラッシュメッセージ用
+   * @return タスク入力画面のパス、または一覧画面へのリダイレクト
+   */
+  @GetMapping("/edit")
+  public String editForm(@RequestParam Integer taskId, Model model, RedirectAttributes ra) {
+    return taskService.getTaskById(taskId)
+        .map(task -> {
+          model.addAttribute("task", task);
+          return "tasks/form";
+        })
+        .orElseGet(() -> {
+          ra.addFlashAttribute("message", "指定されたタスクが見つかりません。");
+          return "redirect:/tasks";
+        });
+  }
+
+  /**
+   * タスクの保存（新規登録または更新）を行う。 バリデーションエラーがある場合は、入力内容を保持したままフォーム画面を再表示する。
+   *
+   * @param task   フォームからバインドされたタスクデータ
+   * @param result バリデーション結果
+   * @param model  エラー時の画面表示用データを格納するModel
+   * @param ra     成功時のリダイレクトメッセージ用
+   * @return 一覧画面へのリダイレクト、または入力エラー時のフォーム画面
    */
   @PostMapping("/save")
-  public String save(@Validated @ModelAttribute Task task, BindingResult result, Model model) {
+  public String save(@Validated @ModelAttribute Task task, BindingResult result, Model model,
+      RedirectAttributes ra) {
+    // バリデーションエラーの有無をチェック
     if (result.hasErrors()) {
+      // 期限（dueDate）にエラーがある場合、動的な日付を含むカスタムメッセージを生成
+      if (result.hasFieldErrors("dueDate")) {
+        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日"));
+        model.addAttribute("dateErrorMsg",
+            "過去の日付は登録できません。本日（" + today + "）以降の日付を選択してください。");
+      }
+      // リダイレクトせず、そのままビューを返すことで入力値を保持する
       return "tasks/form";
     }
 
     taskService.saveTask(task);
+    ra.addFlashAttribute("message", "タスクを保存しました");
     return "redirect:/tasks";
   }
 
   /**
-   * タスク編集画面を表示する。
-   * @param taskId 編集対象のタスクID
-   * @param model 取得したタスクデータを格納するModel
-   * @param ra リダイレクト時にメッセージを渡すためのオブジェクト
-   * @return タスク編集画面のビュー名、または一覧画面へのリダイレクト
-   */
-  @GetMapping("/edit")
-  public String editForm(@RequestParam Integer taskId, Model model, RedirectAttributes ra) {
-    try {
-      Task task = taskService.getTaskById(taskId)
-          .orElseThrow(() -> new IllegalArgumentException("指定されたタスクが見つかりません。ID: " + taskId));
-
-      model.addAttribute("task", task);
-      return "tasks/form";
-
-    } catch (IllegalArgumentException e) {
-      ra.addFlashAttribute("message", e.getMessage());
-      return "redirect:/tasks";
-    }
-  }
-
-  /**
    * タスクを削除し、一覧画面へリダイレクトする。
+   *
    * @param taskId 削除対象のID
-   * @param ra 削除完了メッセージ用
+   * @param ra     削除完了メッセージ用
    * @return 一覧画面へのリダイレクト (/tasks)
    */
   @GetMapping("/delete")

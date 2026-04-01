@@ -39,10 +39,16 @@
 
             <div class="mb-3">
               <label class="form-label">期限</label>
-              <input class="form-control" required th:field="*{dueDate}" type="date">
+              <input class="form-control" th:errorclass="is-invalid" th:field="*{dueDate}"
+                     type="date">
+              <div class="invalid-feedback">
+                <span th:if="${dateErrorMsg}" th:text="${dateErrorMsg}"></span>
+                <span th:errors="*{dueDate}"
+                      th:if="${dateErrorMsg == null && #fields.hasErrors('dueDate')}"></span>
+              </div>
             </div>
 
-            <div class="d-grid gap-2">
+            <div class="d-grid gap-2 mt-4">
               <button class="btn btn-primary" th:text="${task.id == null} ? '登録する' : '更新する'"
                       type="submit"></button>
               <a class="btn btn-light border" th:href="@{/tasks}">一覧に戻る</a>

@@ -39,7 +39,7 @@ public class Task {
    * 必須入力であり、かつ「今日以降」の日付のみを許可します。
    */
   @NotNull(message = "期限を入力してください")
-  @FutureOrPresent(message = "期限には今日以降の日付を指定してください")
+  @FutureOrPresent(message = "過去の日付は登録できません。本日以降の日付を選択してください")
   private LocalDate dueDate;
 
 }
