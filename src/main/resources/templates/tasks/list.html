@@ -6,7 +6,7 @@
 <body>
 <h1>学習タスク管理アプリ</h1>
 <p style="color: blue;" th:if="${message}" th:text="${message}"></p>
-<a th:href="@{/new}">新規登録</a>
+<a th:href="@{/tasks/new}">新規登録</a>
 <table border="1">
   <thead>
   <tr>
@@ -24,8 +24,8 @@
     <td th:text="${task.category}"></td>
     <td th:text="${task.dueDate}"></td>
     <td>
-      <a th:href="@{/edit(taskId=${task.id})}">編集</a>
-      <a th:href="@{/delete(taskId=${task.id})}">削除</a>
+      <a th:href="@{/tasks/edit(taskId=${task.id})}">編集</a>
+      <a th:href="@{/tasks/delete(taskId=${task.id})}">削除</a>
     </td>
   </tr>
   </tbody>
