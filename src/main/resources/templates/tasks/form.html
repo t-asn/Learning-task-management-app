@@ -1,23 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <title>タスク登録・編集</title></head>
+<head><meta charset="UTF-8"><title>タスク登録・編集</title></head>
 <body>
 <h1 th:text="${task.id == null} ? '新規登録' : 'タスク編集'"></h1>
-<form method="post" th:action="@{/save}" th:object="${task}">
-  <input th:field="*{id}" type="hidden">
-  <div>タイトル: <input required th:field="*{title}" type="text"></div>
+<form th:action="@{/tasks/save}" th:object="${task}" method="post">
+  <input type="hidden" th:field="*{id}">
+  <div>タイトル: <input type="text" th:field="*{title}" required></div>
   <div>
     カテゴリ:
     <select th:field="*{category}">
-      <option th:each="cat : ${categories}" th:text="${cat}" th:value="${cat}"></option>
+      <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}"></option>
     </select>
   </div>
-  <div>期限: <input required th:field="*{dueDate}" type="date"></div>
-  <button th:text="${task.id == null} ? '登録する' : '更新する'" type="submit"></button>
+  <div>期限: <input type="date" th:field="*{dueDate}" required></div>
+  <button type="submit" th:text="${task.id == null} ? '登録する' : '更新する'"></button>
 </form>
 <br>
-<a th:href="@{/}">一覧に戻る</a>
+<a th:href="@{/tasks}">一覧に戻る</a>
 </body>
 </html>
