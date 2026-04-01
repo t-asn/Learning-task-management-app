@@ -4,6 +4,8 @@ import com.example.model.Task;
 import com.example.service.TaskService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
@@ -60,10 +62,15 @@ public class TaskController {
    * @return 一覧画面へのリダイレクト (/tasks)
    */
   @PostMapping("/save")
-  public String save(@ModelAttribute Task task, RedirectAttributes ra) {
+  public String save(@Validated @ModelAttribute Task task, BindingResult result, RedirectAttributes ra) {
+    if (result.hasErrors()) {
+      ra.addFlashAttribute("message", "入力内容に誤りがあります。");
+      return "tasks/form";
+    }
+    
     taskService.saveTask(task);
     ra.addFlashAttribute("message", "タスクを保存しました");
-    return "redirect:/tasks"; // /tasks へリダイレクト
+    return "redirect:/tasks";
   }
 
   /**
