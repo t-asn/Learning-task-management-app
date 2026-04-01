@@ -9,10 +9,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 /**
- * タスク管理機能の画面制御を行うコントローラー。 一覧表示、新規登録、編集、削除の各リクエストを処理します。
+ * タスク管理機能の画面制御を行うコントローラー。
+ * 一覧表示、新規登録、編集、削除の各リクエストを処理します。
  */
 @Controller
-@RequestMapping("/")
+@RequestMapping("/tasks") // ベースパスを /tasks に設定
 public class TaskController {
 
   private final TaskService taskService;
@@ -23,8 +24,7 @@ public class TaskController {
 
   /**
    * 各画面で共通して使用するカテゴリリストをModelに登録する。
-   *
-   * @return カテゴリ名のリスト ("Java", "Spring", "その他")
+   * @return カテゴリ名のリスト
    */
   @ModelAttribute("categories")
   public List<String> categories() {
@@ -33,7 +33,6 @@ public class TaskController {
 
   /**
    * タスク一覧画面を表示する。
-   *
    * @param model 画面に渡すデータを格納するModelオブジェクト
    * @return タスク一覧画面のビュー名 (tasks/list)
    */
@@ -45,8 +44,7 @@ public class TaskController {
 
   /**
    * タスク新規登録画面を表示する。
-   *
-   * @param model 新規作成用の空のTaskオブジェクトを格納するModel
+   * @param model 新規作成用の空のTaskオブジェクト
    * @return タスク登録画面のビュー名 (tasks/form)
    */
   @GetMapping("/new")
@@ -56,24 +54,22 @@ public class TaskController {
   }
 
   /**
-   * タスクの保存処理（新規・更新）を行い、一覧画面へリダイレクトする。
-   *
-   * @param task フォームから送信されたタスクデータ
-   * @param ra   リダイレクト先へフラッシュスコープのメッセージを渡すためのオブジェクト
-   * @return 一覧画面へのリダイレクトパス
+   * タスクの保存処理を行い、一覧画面へリダイレクトする。
+   * @param task フォームデータ
+   * @param ra フラッシュメッセージ用
+   * @return 一覧画面へのリダイレクト (/tasks)
    */
   @PostMapping("/save")
   public String save(@ModelAttribute Task task, RedirectAttributes ra) {
     taskService.saveTask(task);
     ra.addFlashAttribute("message", "タスクを保存しました");
-    return "redirect:/";
+    return "redirect:/tasks"; // /tasks へリダイレクト
   }
 
   /**
    * タスク編集画面を表示する。
-   *
-   * @param taskId 編集対象のタスクID
-   * @param model  取得したタスクデータを格納するModel
+   * @param taskId 編集対象のID
+   * @param model 取得したタスクデータ
    * @return タスク編集画面のビュー名 (tasks/form)
    */
   @GetMapping("/edit")
@@ -83,16 +79,15 @@ public class TaskController {
   }
 
   /**
-   * 指定されたIDのタスクを削除し、一覧画面へリダイレクトする。
-   *
-   * @param taskId 削除対象のタスクID
-   * @param ra     削除完了メッセージを渡すためのオブジェクト
-   * @return 一覧画面へのリダイレクトパス
+   * タスクを削除し、一覧画面へリダイレクトする。
+   * @param taskId 削除対象のID
+   * @param ra 削除完了メッセージ用
+   * @return 一覧画面へのリダイレクト (/tasks)
    */
   @GetMapping("/delete")
   public String delete(@RequestParam Integer taskId, RedirectAttributes ra) {
     taskService.deleteTask(taskId);
     ra.addFlashAttribute("message", "タスクを削除しました");
-    return "redirect:/";
+    return "redirect:/tasks"; // /tasks へリダイレクト
   }
 }
