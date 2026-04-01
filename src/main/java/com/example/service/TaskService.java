@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.model.Task;
 import com.example.repository.TaskRepository;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -36,9 +37,8 @@ public class TaskService {
    * @param id 取得対象のタスクID
    * @return 指定されたIDのタスク（存在しない場合は null）
    */
-  public Task getTaskById(Integer id) {
-    // RepositoryからOptionalで受け取り、中身がなければnullを返す処理
-    return taskRepository.findById(id).orElse(null);
+  public Optional<Task> getTaskById(Integer id) {
+    return taskRepository.findById(id);
   }
 
   /**

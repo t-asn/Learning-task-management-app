@@ -68,14 +68,24 @@ public class TaskController {
 
   /**
    * タスク編集画面を表示する。
-   * @param taskId 編集対象のID
-   * @param model 取得したタスクデータ
-   * @return タスク編集画面のビュー名 (tasks/form)
+   * @param taskId 編集対象のタスクID
+   * @param model 取得したタスクデータを格納するModel
+   * @param ra リダイレクト時にメッセージを渡すためのオブジェクト
+   * @return タスク編集画面のビュー名、または一覧画面へのリダイレクト
    */
   @GetMapping("/edit")
-  public String editForm(@RequestParam Integer taskId, Model model) {
-    model.addAttribute("task", taskService.getTaskById(taskId));
-    return "tasks/form";
+  public String editForm(@RequestParam Integer taskId, Model model, RedirectAttributes ra) {
+    try {
+      Task task = taskService.getTaskById(taskId)
+          .orElseThrow(() -> new IllegalArgumentException("指定されたタスクが見つかりません。ID: " + taskId));
+
+      model.addAttribute("task", task);
+      return "tasks/form";
+
+    } catch (IllegalArgumentException e) {
+      ra.addFlashAttribute("message", e.getMessage());
+      return "redirect:/tasks";
+    }
   }
 
   /**
