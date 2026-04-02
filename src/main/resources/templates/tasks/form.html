@@ -1,57 +1,45 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <title>タスク登録・編集</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-        rel="stylesheet">
-</head>
-<body>
+<head th:replace="~{layout/common :: head(${task.id == null} ? '新規登録' : 'タスク編集')}"></head>
+<body class="bg-light">
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-          <h3 class="card-title mb-0"
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white py-3">
+          <h3 class="card-title h5 mb-0"
               th:text="${task.id == null} ? '新規タスク登録' : 'タスク編集'"></h3>
         </div>
-        <div class="card-body">
+        <div class="card-body p-4">
           <form method="post" th:action="@{/tasks/save}" th:object="${task}">
             <input th:field="*{id}" type="hidden">
 
             <div class="mb-3">
-              <label class="form-label">カテゴリ</label>
+              <label class="form-label fw-bold">カテゴリ</label>
               <select class="form-select" th:errorclass="is-invalid" th:field="*{category}">
                 <option value="">選択してください</option>
                 <option th:each="cat : ${categories}" th:text="${cat}" th:value="${cat}"></option>
               </select>
-              <div class="invalid-feedback" th:errors="*{category}"
-                   th:if="${#fields.hasErrors('category')}"></div>
+              <div class="invalid-feedback" th:errors="*{category}"></div>
             </div>
 
             <div class="mb-3">
-              <label class="form-label">タイトル</label>
-              <input class="form-control" th:errorclass="is-invalid" th:field="*{title}"
-                     type="text">
-              <div class="invalid-feedback" th:errors="*{title}"
-                   th:if="${#fields.hasErrors('title')}"></div>
+              <label class="form-label fw-bold">タイトル</label>
+              <input class="form-control" placeholder="例: Spring Bootの学習"
+                     th:errorclass="is-invalid" th:field="*{title}" type="text">
+              <div class="invalid-feedback" th:errors="*{title}"></div>
             </div>
 
             <div class="mb-3">
-              <label class="form-label">期限</label>
-              <input class="form-control" th:errorclass="is-invalid" th:field="*{dueDate}"
-                     type="date">
-
-              <div class="invalid-feedback"
-                   th:errors="*{dueDate}"
-                   th:if="${#fields.hasErrors('dueDate')}">
-              </div>
+              <label class="form-label fw-bold">期限</label>
+              <input class="form-control" th:errorclass="is-invalid" th:field="*{dueDate}" type="date">
+              <div class="invalid-feedback" th:errors="*{dueDate}"></div>
             </div>
 
             <div class="d-grid gap-2 mt-4">
-              <button class="btn btn-primary" th:text="${task.id == null} ? '登録する' : '更新する'"
-                      type="submit"></button>
-              <a class="btn btn-light border" th:href="@{/tasks}">一覧に戻る</a>
+              <button class="btn btn-primary btn-lg" type="submit"
+                      th:text="${task.id == null} ? '登録する' : '更新する'"></button>
+              <a class="btn btn-link text-secondary" th:href="@{/tasks}">キャンセルして戻る</a>
             </div>
           </form>
         </div>
@@ -59,6 +47,5 @@
     </div>
   </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
