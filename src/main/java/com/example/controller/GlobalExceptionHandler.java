@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * アプリケーション全体の例外をハンドリングするクラス。
+ *
  * @ControllerAdvice により、全コントローラーで発生した例外をこのクラスで捕捉します。
  */
 @ControllerAdvice
@@ -19,9 +20,9 @@ public class GlobalExceptionHandler {
   private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   /**
-   * TaskNotFoundException（タスクが見つからない例外）が発生した際の処理。
-   * 自作のエラー画面にエラー内容を渡して表示します。
-   * * @param ex 発生した例外オブジェクト
+   * TaskNotFoundException（タスクが見つからない例外）が発生した際の処理。 自作のエラー画面にエラー内容を渡して表示します。 * @param ex
+   * 発生した例外オブジェクト
+   *
    * @param model 画面にデータを渡すためのModel
    * @return エラー表示用HTMLのパス (error/task-error)
    */
@@ -44,7 +45,8 @@ public class GlobalExceptionHandler {
   public String handleGeneralException(Exception ex, Model model) {
     logger.error("An unexpected error occurred: {}", ex.getMessage(), ex);
     model.addAttribute("errorTitle", "System Error");
-    model.addAttribute("errorMessage", "予期せぬエラーが発生しました。システム管理者に連絡してください。");
+    model.addAttribute("errorMessage",
+        "予期せぬエラーが発生しました。システム管理者に連絡してください。");
     return "error/task-error";
   }
 }
