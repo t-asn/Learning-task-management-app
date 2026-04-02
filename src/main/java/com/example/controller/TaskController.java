@@ -82,7 +82,8 @@ public class TaskController {
    * @return 一覧画面へのリダイレクト、または入力エラー時のフォーム画面
    */
   @PostMapping("/save")
-  public String save(@Validated @ModelAttribute Task task, BindingResult result, Model model, RedirectAttributes ra) {
+  public String save(@Validated @ModelAttribute Task task, BindingResult result, Model model,
+      RedirectAttributes ra) {
     if (result.hasErrors()) {
       return "tasks/form";
     }
