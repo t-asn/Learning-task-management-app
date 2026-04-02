@@ -41,10 +41,10 @@
               <label class="form-label">期限</label>
               <input class="form-control" th:errorclass="is-invalid" th:field="*{dueDate}"
                      type="date">
-              <div class="invalid-feedback">
-                <span th:if="${dateErrorMsg}" th:text="${dateErrorMsg}"></span>
-                <span th:errors="*{dueDate}"
-                      th:if="${dateErrorMsg == null && #fields.hasErrors('dueDate')}"></span>
+
+              <div class="invalid-feedback"
+                   th:errors="*{dueDate}"
+                   th:if="${#fields.hasErrors('dueDate')}">
               </div>
             </div>
 

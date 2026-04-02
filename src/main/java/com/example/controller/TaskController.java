@@ -9,8 +9,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -93,15 +91,7 @@ public class TaskController {
   @PostMapping("/save")
   public String save(@Validated @ModelAttribute Task task, BindingResult result, Model model,
       RedirectAttributes ra) {
-    // バリデーションエラーの有無をチェック
     if (result.hasErrors()) {
-      // 期限（dueDate）にエラーがある場合、動的な日付を含むカスタムメッセージを生成
-      if (result.hasFieldErrors("dueDate")) {
-        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日"));
-        model.addAttribute("dateErrorMsg",
-            "過去の日付は登録できません。本日（" + today + "）以降の日付を選択してください。");
-      }
-      // リダイレクトせず、そのままビューを返すことで入力値を保持する
       return "tasks/form";
     }
 
