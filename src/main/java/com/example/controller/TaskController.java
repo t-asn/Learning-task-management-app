@@ -63,20 +63,13 @@ public class TaskController {
    *
    * @param taskId 編集対象のタスクID
    * @param model  取得したタスクデータを格納するModel
-   * @param ra     リダイレクト時のフラッシュメッセージ用
    * @return タスク入力画面のパス、または一覧画面へのリダイレクト
    */
   @GetMapping("/edit")
-  public String editForm(@RequestParam Integer taskId, Model model, RedirectAttributes ra) {
-    return taskService.getTaskById(taskId)
-        .map(task -> {
-          model.addAttribute("task", task);
-          return "tasks/form";
-        })
-        .orElseGet(() -> {
-          ra.addFlashAttribute("message", "指定されたタスクが見つかりません。");
-          return "redirect:/tasks";
-        });
+  public String editForm(@RequestParam Integer taskId, Model model) {
+    Task task = taskService.getTaskById(taskId);
+    model.addAttribute("task", task);
+    return "tasks/form";
   }
 
   /**
@@ -89,12 +82,10 @@ public class TaskController {
    * @return 一覧画面へのリダイレクト、または入力エラー時のフォーム画面
    */
   @PostMapping("/save")
-  public String save(@Validated @ModelAttribute Task task, BindingResult result, Model model,
-      RedirectAttributes ra) {
+  public String save(@Validated @ModelAttribute Task task, BindingResult result, Model model, RedirectAttributes ra) {
     if (result.hasErrors()) {
       return "tasks/form";
     }
-
     taskService.saveTask(task);
     ra.addFlashAttribute("message", "タスクを保存しました");
     return "redirect:/tasks";
