@@ -20,7 +20,9 @@ public class GlobalExceptionHandler {
   private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   /**
-   * TaskNotFoundException（タスクが見つからない例外）が発生した際の処理。 自作のエラー画面にエラー内容を渡して表示します。 * @param ex
+   * TaskNotFoundException（タスクが見つからない例外）が発生した際の処理。 自作のエラー画面にエラー内容を渡して表示します。
+   *
+   * @param ex
    * 発生した例外オブジェクト
    *
    * @param model 画面にデータを渡すためのModel
@@ -33,12 +35,11 @@ public class GlobalExceptionHandler {
     model.addAttribute("errorTitle", "404 Not Found");
     model.addAttribute("errorMessage", ex.getMessage());
 
-    // src/main/resources/templates/error/task-error.html を表示
     return "error/task-error";
   }
 
   /**
-   * その他の予期せぬ例外が発生した場合の汎用ハンドラ（必要に応じて追加）。
+   * その他の予期せぬ例外が発生した場合の汎用ハンドラ。
    */
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

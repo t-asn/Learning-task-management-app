@@ -104,6 +104,6 @@ public class TaskController {
   public String delete(@RequestParam Integer taskId, RedirectAttributes ra) {
     taskService.deleteTask(taskId);
     ra.addFlashAttribute("message", "タスクを削除しました");
-    return "redirect:/tasks"; // /tasks へリダイレクト
+    return "redirect:/tasks";
   }
 }

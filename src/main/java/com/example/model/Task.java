@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 /**
- * タスク情報を保持するドメインモデル（エンティティ）。 PostgreSQLの tasks テーブルとマッピングされ、入力バリデーションルールを定義します。
+ * タスクの情報を保持するドメインモデル。 Lombokによるコード生成と、Bean Validationによる入力チェックルールを定義しています。
  */
 @Data
 @NoArgsConstructor

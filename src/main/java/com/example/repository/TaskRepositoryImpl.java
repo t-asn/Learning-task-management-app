@@ -1,67 +1,59 @@
 package com.example.repository;
 
 import com.example.dao.TaskDao;
+import com.example.exception.TaskNotFoundException;
 import com.example.model.Task;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * TaskRepository インターフェースの実装クラス。 Data Access Object (TaskDao) をラップし、ドメイン層に対して適切な型でデータを提供します。 直接 Dao
- * を呼ばず本クラスを経由することで、将来的な永続化先の変更やロジックの追加を局所化します。
+ * TaskRepository インターフェースの実装クラス。 データの永続化において、存在確認を伴う安全な更新処理を提供します。
  */
 @Repository
 public class TaskRepositoryImpl implements TaskRepository {
 
   private final TaskDao taskDao;
 
-  /**
-   * コンストラクタ。 Springにより TaskDao (CrudRepository) がインジェクションされます。
-   *
-   * @param taskDao データアクセス用インターフェース
-   */
   public TaskRepositoryImpl(TaskDao taskDao) {
     this.taskDao = taskDao;
   }
 
-  /**
-   * 全てのタスクを取得します。 CrudRepository の戻り値 (Iterable) を List に変換して返します。
-   *
-   * @return 全タスクのリスト
-   */
   @Override
   public List<Task> findAll() {
-    return ((List<Task>) taskDao.findAll());
+    return (List<Task>) taskDao.findAll();
   }
 
-  /**
-   * 指定されたIDのタスクを取得します。
-   *
-   * @param id タスクID
-   * @return タスクを保持する Optional
-   */
   @Override
   public Optional<Task> findById(Integer id) {
     return taskDao.findById(id);
   }
 
   /**
-   * タスクを保存（新規登録または更新）します。
+   * タスクを保存します。 更新（IDが存在する場合）の際は、事前にDBからレコードを取得し、 存在することを確認してから更新後のインスタンスで上書き保存を行います。
    *
-   * @param task 保存対象のタスクオブジェクト
+   * @param task 保存・更新対象のタスク
+   * @throws TaskNotFoundException 更新対象が存在しない場合
    */
   @Override
   public void save(Task task) {
-    taskDao.save(task);
+    if (task.getId() != null) {
+      taskDao.findById(task.getId())
+          .orElseThrow(() -> new TaskNotFoundException(
+              "更新対象のタスクが見つかりません。taskId=" + task.getId()));
+
+      taskDao.save(task);
+    } else {
+      // 新規登録の場合はそのまま保存
+      taskDao.save(task);
+    }
   }
 
-  /**
-   * 指定されたIDのタスクを物理削除します。
-   *
-   * @param id 削除対象のタスクID
-   */
   @Override
   public void deleteById(Integer id) {
+    if (!taskDao.existsById(id)) {
+      throw new TaskNotFoundException("削除対象のタスクが見つかりません。taskId=" + id);
+    }
     taskDao.deleteById(id);
   }
 }
