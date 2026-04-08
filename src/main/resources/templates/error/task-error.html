@@ -1,19 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/common :: head('エラー')}"></head>
-<body class="bg-light">
-<div class="container text-center" style="margin-top: 100px; max-width: 600px;">
-  <div class="card shadow-sm border-0">
-    <div class="card-body p-5">
-      <div class="display-1 fw-bold text-danger mb-3" th:text="${errorTitle}">404</div>
-      <h2 class="h4 text-secondary mb-4">リクエストを処理できませんでした</h2>
-      <p class="text-muted mb-5" th:text="${errorMessage}">エラーの詳細がここに表示されます。</p>
-      <div class="d-grid">
-        <a class="btn btn-primary btn-lg" th:href="@{/tasks}">一覧画面へ戻る</a>
-      </div>
-    </div>
-  </div>
-  <p class="mt-4 text-secondary small">&copy; 2026 Task Management System</p>
+<body class="bg-light d-flex align-items-center justify-content-center" style="height: 100vh;">
+<div class="text-center">
+  <h1 class="display-1 fw-bold text-danger" th:text="${errorTitle}">Error</h1>
+  <h3 class="mb-4">リクエストを処理できませんでした</h3>
+  <p class="text-muted mb-4" th:text="${errorMessage}"></p>
+  <a class="btn btn-primary btn-lg px-5 shadow-sm" th:href="@{/tasks}">一覧画面へ戻る</a>
 </div>
 </body>
 </html>

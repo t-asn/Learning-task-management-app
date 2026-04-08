@@ -4,13 +4,14 @@ import com.example.model.Task;
 import java.util.List;
 
 /**
- * タスク管理に関するビジネスロジックを定義するインターフェース。
+ * タスク管理のビジネスロジックを定義するインターフェース。
  */
 public interface TaskService {
 
-  List<Task> getAllTasks();
+  List<Task> getTasksByPage(int page, int size);
 
-  // ポイント：戻り値は Optional ではなく Task 直接にする（Serviceで例外を投げるため）
+  long getTotalCount();
+
   Task getTaskById(Integer id);
 
   void saveTask(Task task);
