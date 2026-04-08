@@ -31,7 +31,6 @@ public class TaskRepositoryImpl implements TaskRepository {
    */
   @Override
   public List<Task> findAll() {
-    // 修正箇所：強制キャスト (List<Task>) を廃止し、派生クエリメソッドを呼び出す
     return taskDao.findAllByOrderByIdDesc();
   }
 
