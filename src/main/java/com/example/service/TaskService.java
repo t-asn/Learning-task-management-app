@@ -1,62 +1,19 @@
 package com.example.service;
 
 import com.example.model.Task;
-import com.example.repository.TaskRepository;
-import java.util.Optional;
-import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * タスク管理に関するビジネスロジックを処理するサービスクラス。 コントローラーからの要求を受け取り、リポジトリを利用してデータの参照・更新・削除を行います。
+ * タスク管理に関するビジネスロジックを定義するインターフェース。
  */
-@Service
-public class TaskService {
+public interface TaskService {
 
-  private final TaskRepository taskRepository;
+  List<Task> getAllTasks();
 
-  /**
-   * コンストラクタ。 Springによって適切なTaskRepositoryの実装（InMemoryTaskRepository等）が注入されます。
-   *
-   * @param taskRepository 使用するリポジトリ
-   */
-  public TaskService(TaskRepository taskRepository) {
-    this.taskRepository = taskRepository;
-  }
+  // ポイント：戻り値は Optional ではなく Task 直接にする（Serviceで例外を投げるため）
+  Task getTaskById(Integer id);
 
-  /**
-   * すべてのタスクを取得する。
-   *
-   * @return 登録されているタスクの全リスト
-   */
-  public List<Task> getAllTasks() {
-    return taskRepository.findAll();
-  }
+  void saveTask(Task task);
 
-  /**
-   * IDを指定して特定のタスクを1件取得する。
-   *
-   * @param id 取得対象のタスクID
-   * @return 指定されたIDのタスク（存在しない場合は null）
-   */
-  public Optional<Task> getTaskById(Integer id) {
-    return taskRepository.findById(id);
-  }
-
-  /**
-   * タスクの保存処理を行う。
-   *
-   * @param task 保存するタスクオブジェクト
-   */
-  public void saveTask(Task task) {
-    taskRepository.save(task);
-  }
-
-  /**
-   * 指定されたIDのタスクを削除する。
-   *
-   * @param id 削除対象のタスクID
-   */
-  public void deleteTask(Integer id) {
-    taskRepository.deleteById(id);
-  }
+  void deleteTask(Integer id);
 }

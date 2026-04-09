@@ -1,3 +1,9 @@
 spring:
-  application:
-    name: Learning-task-management-app
+  datasource:
+    url: jdbc:postgresql://localhost:5432/taskdb
+    username: task_admin
+    password: p@ssw0rd
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: always
