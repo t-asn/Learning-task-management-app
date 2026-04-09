@@ -9,11 +9,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-/**
- * アプリケーション全体の例外をハンドリングするクラス。
- *
- * @ControllerAdvice により、全コントローラーで発生した例外をこのクラスで捕捉します。
- */
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -22,8 +17,7 @@ public class GlobalExceptionHandler {
   /**
    * TaskNotFoundException（タスクが見つからない例外）が発生した際の処理。 自作のエラー画面にエラー内容を渡して表示します。
    *
-   * @param ex
-   * 発生した例外オブジェクト
+   * @param ex　発生した例外オブジェクト
    *
    * @param model 画面にデータを渡すためのModel
    * @return エラー表示用HTMLのパス (error/task-error)
