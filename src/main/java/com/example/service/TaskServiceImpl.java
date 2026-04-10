@@ -8,30 +8,28 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * TaskService の実装クラス。 ページネーションの計算など、ビジネス要件に基づく制御を行います。
+ * TaskService の実装クラス。
+ * ページネーションの計算や、カテゴリ連携を含めたビジネスルールを制御します。
  */
 @Service
 public class TaskServiceImpl implements TaskService {
 
   private final TaskRepository taskRepository;
+  private final CategoryService categoryService;
 
-  public TaskServiceImpl(TaskRepository taskRepository) {
+  public TaskServiceImpl(TaskRepository taskRepository, CategoryService categoryService) {
     this.taskRepository = taskRepository;
+    this.categoryService = categoryService;
   }
 
   /**
    * ページ番号と表示件数に基づき、バリデーション済みのタスクリストを取得します。
-   *
-   * @param page 現在のページ番号
-   * @param size 1ページあたりの表示件数
-   * @return 該当ページのタスクリスト
    */
   @Override
   public List<Task> getTasksByPage(int page, int size) {
     long totalCount = taskRepository.countAll();
     int totalPages = (int) Math.ceil((double) totalCount / size);
 
-    // ページ番号の異常系バリデーション
     if (totalCount > 0 && (page < 1 || page > totalPages)) {
       throw new InvalidPageException("page=" + page);
     } else if (totalCount == 0 && page > 1) {
@@ -53,8 +51,14 @@ public class TaskServiceImpl implements TaskService {
         .orElseThrow(() -> new TaskNotFoundException("指定されたタスクは存在しません。ID: " + id));
   }
 
+  /**
+   * タスクを保存します。
+   * 保存前に指定されたカテゴリIDがマスタに存在するか検証します。
+   */
   @Override
   public void saveTask(Task task) {
+    // カテゴリの存在チェック（存在しない場合は CategoryNotFoundException が送出される）
+    categoryService.getCategoryById(task.getCategoryId());
     taskRepository.save(task);
   }
 
