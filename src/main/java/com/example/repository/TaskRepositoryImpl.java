@@ -66,16 +66,10 @@ public class TaskRepositoryImpl implements TaskRepository {
   }
 
   /**
-<<<<<<< HEAD
-   * 指定されたIDのタスクを削除します。 削除前に存在確認を行います。
-   *
-   * @param id 削除対象のタスクID
-=======
    * 指定されたIDのタスクを削除します。 事前に存在確認を行い、データが存在しない場合は例外を送出します。
    *
    * @param id 削除対象のタスクID
    * @throws TaskNotFoundException 削除対象が存在しない場合
->>>>>>> master
    */
   @Override
   public void deleteById(Integer id) {

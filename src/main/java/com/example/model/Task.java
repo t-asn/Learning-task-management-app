@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 /**
- * タスクエンティティ。PostgreSQLの tasks テーブルとマッピングされます。
+ * タスクの情報を保持するドメインモデル。 Lombokによるコード生成と、Bean Validationによる入力チェックルールを定義しています。
  */
 @Data
 @NoArgsConstructor

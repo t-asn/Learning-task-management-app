@@ -14,7 +14,6 @@ import java.util.List;
 public interface TaskDao extends CrudRepository<Task, Integer> {
 
   /**
-<<<<<<< HEAD
    * IDの降順で、指定された範囲のタスクを取得します。
    *
    * @param limit  取得件数 (1ページあたりの件数)
