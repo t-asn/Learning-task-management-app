@@ -2,13 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/common :: head(${task.id == null} ? '新規登録' : 'タスク編集')}"></head>
 <body class="bg-light">
-<div class="container mt-5">
+<nav th:replace="~{layout/common :: navbar}"></nav>
+
+<div class="container pb-5">
   <div class="row justify-content-center">
-    <div class="col-md-6">
+    <div class="col-md-6 col-lg-5">
       <div class="card shadow-sm border-0">
         <div class="card-header bg-primary text-white py-3">
-          <h3 class="card-title h5 mb-0"
-              th:text="${task.id == null} ? '新規タスク登録' : '✎ タスク編集'"></h3>
+          <h3 class="card-title h5 mb-0 fw-bold"
+              th:text="${task.id == null} ? '＋ 新規タスク登録' : '✎ タスク編集'"></h3>
         </div>
         <div class="card-body p-4 bg-white">
           <form method="post" th:action="@{/tasks/save}" th:object="${task}">
@@ -16,11 +18,12 @@
 
             <div class="mb-3">
               <label class="form-label fw-bold">カテゴリ</label>
-              <select class="form-select" th:errorclass="is-invalid" th:field="*{category}">
+              <select class="form-select" th:errorclass="is-invalid" th:field="*{categoryId}">
                 <option value="">選択してください</option>
-                <option th:each="cat : ${categories}" th:text="${cat}" th:value="${cat}"></option>
+                <option th:each="cat : ${categories}" th:text="${cat.name}"
+                        th:value="${cat.id}"></option>
               </select>
-              <div class="invalid-feedback" th:errors="*{category}"></div>
+              <div class="invalid-feedback" th:errors="*{categoryId}"></div>
             </div>
 
             <div class="mb-3">
@@ -38,9 +41,9 @@
             </div>
 
             <div class="d-grid gap-2 mt-4">
-              <button class="btn btn-primary btn-lg shadow-sm" th:text="${task.id == null} ? '登録する' : '更新する'"
+              <button class="btn btn-primary btn-lg shadow-sm fw-bold" th:text="${task.id == null} ? '登録する' : '更新する'"
                       type="submit"></button>
-              <a class="btn btn-outline-secondary" th:href="@{/tasks}">一覧に戻る</a>
+              <a class="btn btn-outline-secondary" th:href="@{/tasks}">キャンセルして一覧に戻る</a>
             </div>
           </form>
         </div>

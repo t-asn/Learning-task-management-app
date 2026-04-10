@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/common :: head('カテゴリ一覧')}"></head>
+<body class="bg-light">
+<nav th:replace="~{layout/common :: navbar}"></nav>
+
+<div class="container pb-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h2 class="mb-4 fw-bold border-bottom pb-2">カテゴリマスタ一覧</h2>
+
+      <div class="list-group shadow-sm mb-4">
+        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3" th:each="cat : ${categories}"
+           th:href="@{/categories/{id}(id=${cat.id})}">
+          <span class="fw-bold fs-5" th:text="${cat.name}"></span>
+          <span class="badge bg-primary rounded-pill px-3 py-2">詳細を見る</span>
+        </a>
+      </div>
+
+      <div class="text-center">
+        <a class="btn btn-outline-secondary px-4" th:href="@{/tasks}">タスク一覧へ戻る</a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

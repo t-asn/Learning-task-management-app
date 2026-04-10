@@ -1,6 +1,8 @@
 package com.example.controller;
 
+import com.example.model.Category;
 import com.example.model.Task;
+import com.example.service.CategoryService;
 import com.example.service.TaskService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,26 +11,30 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
- * タスク管理機能の画面制御を行うコントローラー。
+ * タスク一覧、登録、編集、削除の画面遷移を制御するコントローラー。
  */
 @Controller
 @RequestMapping("/tasks")
 public class TaskController {
 
   private final TaskService taskService;
+  private final CategoryService categoryService;
 
-  public TaskController(TaskService taskService) {
+  public TaskController(TaskService taskService, CategoryService categoryService) {
     this.taskService = taskService;
+    this.categoryService = categoryService;
   }
 
   /**
-   * 各画面で共通して使用するカテゴリリスト。
+   * 登録・編集画面のプルダウンメニュー用にカテゴリマスタを提供します。
    */
   @ModelAttribute("categories")
-  public List<String> categories() {
-    return List.of("Java", "Spring", "その他");
+  public List<Category> categories() {
+    return categoryService.findAll();
   }
 
   /**
@@ -43,7 +49,12 @@ public class TaskController {
     long totalCount = taskService.getTotalCount();
     List<Task> tasks = taskService.getTasksByPage(page, size);
 
+    // ViewでカテゴリIDからカテゴリ名を表示するための変換マップを作成
+    Map<Integer, String> categoryMap = categoryService.findAll().stream()
+        .collect(Collectors.toMap(Category::getId, Category::getName));
+
     model.addAttribute("tasks", tasks);
+    model.addAttribute("categoryMap", categoryMap);
     model.addAttribute("currentPage", page);
     model.addAttribute("pageSize", size);
     model.addAttribute("totalPages", (int) Math.ceil((double) totalCount / size));
@@ -76,8 +87,7 @@ public class TaskController {
    * タスクの保存（新規登録または更新）を行います。
    */
   @PostMapping("/save")
-  public String save(@Validated @ModelAttribute Task task, BindingResult result,
-      RedirectAttributes ra) {
+  public String save(@Validated @ModelAttribute Task task, BindingResult result, RedirectAttributes ra) {
     if (result.hasErrors()) {
       return "tasks/form";
     }
