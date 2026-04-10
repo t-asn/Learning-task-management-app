@@ -30,7 +30,6 @@ public class TaskRepositoryImpl implements TaskRepository {
    * @return タスクのリスト（ID降順）
    */
   @Override
-<<<<<<< HEAD
   public List<Task> findByPage(int limit, int offset) {
     return taskDao.findByPage(limit, offset);
   }
@@ -38,10 +37,6 @@ public class TaskRepositoryImpl implements TaskRepository {
   @Override
   public long countAll() {
     return taskDao.countAll();
-=======
-  public List<Task> findAll() {
-    return taskDao.findAllByOrderByIdDesc();
->>>>>>> master
   }
 
   /**

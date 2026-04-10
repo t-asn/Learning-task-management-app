@@ -31,12 +31,4 @@ public interface TaskDao extends CrudRepository<Task, Integer> {
    */
   @Query("SELECT COUNT(*) FROM tasks")
   long countAll();
-=======
-   * タスクをIDの降順で全件取得します。
-   *
-   * @return ID降順にソートされたタスクのリスト
-   */
-  List<Task> findAllByOrderByIdDesc();
-
->>>>>>> master
 }
