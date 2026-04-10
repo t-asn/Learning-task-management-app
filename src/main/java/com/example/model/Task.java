@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 /**
- * タスクエンティティ。PostgreSQLの tasks テーブルとマッピングされます。
+ * タスクエンティティ。 tasks テーブルとマッピングされます。
  */
 @Data
 @NoArgsConstructor
@@ -31,15 +31,15 @@ public class Task {
   private String title;
 
   /**
-   * タスクのカテゴリ（必須）。
+   * カテゴリID（必須。categories テーブルの id を参照）。
    */
-  @NotBlank(message = "カテゴリを選択してください")
-  private String category;
+  @NotNull(message = "カテゴリを選択してください")
+  private Integer categoryId;
 
   /**
    * タスクの完了期限（必須、過去日は不可）。
    */
   @NotNull(message = "期限を入力してください")
-  @FutureOrPresent(message = "過去の日付は登録できません。本日以降の日付を選択してください")
+  @FutureOrPresent(message = "過去の日付は登録できません。本日以降を選択してください")
   private LocalDate dueDate;
 }
