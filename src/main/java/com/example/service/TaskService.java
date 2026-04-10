@@ -1,14 +1,12 @@
 package com.example.service;
 
 import com.example.model.Task;
+import com.example.model.TaskPageResult;
 import java.util.List;
 
-/**
- * タスク管理のビジネスロジックを定義するインターフェース。
- */
 public interface TaskService {
 
-  List<Task> getTasksByPage(int page, int size);
+  TaskPageResult getTasksByPage(int page, int size);
 
   long getTotalCount();
 
