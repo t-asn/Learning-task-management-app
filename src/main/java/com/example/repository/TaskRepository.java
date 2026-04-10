@@ -9,6 +9,8 @@ import java.util.Optional;
  */
 public interface TaskRepository {
 
+  List<Task> findAll();
+
   List<Task> findByPage(int limit, int offset);
 
   long countAll();
