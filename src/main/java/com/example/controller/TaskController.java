@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
+/**
+ * タスク管理機能の画面制御を行うコントローラー。
+ */
 @Controller
 @RequestMapping("/tasks")
 public class TaskController {
@@ -21,18 +24,24 @@ public class TaskController {
     this.taskService = taskService;
   }
 
+  /**
+   * 各画面で共通して使用するカテゴリリスト。
+   */
   @ModelAttribute("categories")
   public List<String> categories() {
     return List.of("Java", "Spring", "その他");
   }
 
+  /**
+   * ページネーション対応のタスク一覧画面を表示します。 サービスから一括取得したデータを使用して、効率的に描画情報を計算します。
+   */
   @GetMapping
   public String list(
       @RequestParam(defaultValue = "1") int page,
       @RequestParam(defaultValue = "5") int size,
       Model model) {
 
-    // 修正点：サービスを一度呼び出し、結果オブジェクトからデータを取得
+    // サービスを一度呼び出し、リストと総件数の両方を取得
     TaskPageResult result = taskService.getTasksByPage(page, size);
     List<Task> tasks = result.tasks();
     long totalCount = result.totalCount();
@@ -48,18 +57,27 @@ public class TaskController {
     return "tasks/list";
   }
 
+  /**
+   * 新規登録画面を表示します。
+   */
   @GetMapping("/new")
   public String addForm(Model model) {
     model.addAttribute("task", new Task());
     return "tasks/form";
   }
 
+  /**
+   * 編集画面を表示します。
+   */
   @GetMapping("/edit")
   public String editForm(@RequestParam Integer taskId, Model model) {
     model.addAttribute("task", taskService.getTaskById(taskId));
     return "tasks/form";
   }
 
+  /**
+   * タスクの保存（新規登録または更新）を行います。
+   */
   @PostMapping("/save")
   public String save(@Validated @ModelAttribute Task task, BindingResult result,
       RedirectAttributes ra) {
@@ -71,6 +89,9 @@ public class TaskController {
     return "redirect:/tasks";
   }
 
+  /**
+   * タスクを削除します。
+   */
   @GetMapping("/delete")
   public String delete(@RequestParam Integer taskId, RedirectAttributes ra) {
     taskService.deleteTask(taskId);
