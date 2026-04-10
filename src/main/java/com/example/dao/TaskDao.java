@@ -14,6 +14,7 @@ import java.util.List;
 public interface TaskDao extends CrudRepository<Task, Integer> {
 
   /**
+<<<<<<< HEAD
    * IDの降順で、指定された範囲のタスクを取得します。
    *
    * @param limit  取得件数 (1ページあたりの件数)
@@ -30,4 +31,12 @@ public interface TaskDao extends CrudRepository<Task, Integer> {
    */
   @Query("SELECT COUNT(*) FROM tasks")
   long countAll();
+=======
+   * タスクをIDの降順で全件取得します。
+   *
+   * @return ID降順にソートされたタスクのリスト
+   */
+  List<Task> findAllByOrderByIdDesc();
+
+>>>>>>> master
 }

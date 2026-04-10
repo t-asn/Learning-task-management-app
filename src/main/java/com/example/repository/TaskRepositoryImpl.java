@@ -15,11 +15,22 @@ public class TaskRepositoryImpl implements TaskRepository {
 
   private final TaskDao taskDao;
 
+  /**
+   * コンストラクタによる依存性の注入を行います。
+   *
+   * @param taskDao データアクセスオブジェクト
+   */
   public TaskRepositoryImpl(TaskDao taskDao) {
     this.taskDao = taskDao;
   }
 
+  /**
+   * すべてのタスクを取得します。 強制キャストを排除し、DAOの派生クエリメソッドを利用して安全にListを取得します。
+   *
+   * @return タスクのリスト（ID降順）
+   */
   @Override
+<<<<<<< HEAD
   public List<Task> findByPage(int limit, int offset) {
     return taskDao.findByPage(limit, offset);
   }
@@ -27,8 +38,18 @@ public class TaskRepositoryImpl implements TaskRepository {
   @Override
   public long countAll() {
     return taskDao.countAll();
+=======
+  public List<Task> findAll() {
+    return taskDao.findAllByOrderByIdDesc();
+>>>>>>> master
   }
 
+  /**
+   * 指定されたIDのタスクを取得します。
+   *
+   * @param id タスクID
+   * @return タスクを保持するOptional
+   */
   @Override
   public Optional<Task> findById(Integer id) {
     return taskDao.findById(id);
@@ -50,9 +71,16 @@ public class TaskRepositoryImpl implements TaskRepository {
   }
 
   /**
+<<<<<<< HEAD
    * 指定されたIDのタスクを削除します。 削除前に存在確認を行います。
    *
    * @param id 削除対象のタスクID
+=======
+   * 指定されたIDのタスクを削除します。 事前に存在確認を行い、データが存在しない場合は例外を送出します。
+   *
+   * @param id 削除対象のタスクID
+   * @throws TaskNotFoundException 削除対象が存在しない場合
+>>>>>>> master
    */
   @Override
   public void deleteById(Integer id) {
