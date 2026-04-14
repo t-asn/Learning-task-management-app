@@ -32,6 +32,7 @@ public class Task {
 
   /**
    * カテゴリID（必須。categories テーブルの id を参照）。
+   * 以前の String category から Integer categoryId に変更されています。
    */
   @NotNull(message = "カテゴリを選択してください")
   private Integer categoryId;
