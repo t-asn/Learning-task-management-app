@@ -48,8 +48,7 @@ public class TaskController {
 
     long totalCount = taskService.getTotalCount();
     List<Task> tasks = taskService.getTasksByPage(page, size);
-
-    // ViewでカテゴリIDからカテゴリ名を表示するための変換マップを作成
+    
     Map<Integer, String> categoryMap = categoryService.findAll().stream()
         .collect(Collectors.toMap(Category::getId, Category::getName));
 
