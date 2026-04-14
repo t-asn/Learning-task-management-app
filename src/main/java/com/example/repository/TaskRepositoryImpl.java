@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * TaskRepository インターフェースの実装クラス。 データの永続化において、存在確認を伴う安全な更新処理を提供します。
+ * TaskRepositoryの実装クラス。 データの永続化において、存在確認を伴う安全な更新処理を提供します。
  */
 @Repository
 public class TaskRepositoryImpl implements TaskRepository {
@@ -30,8 +30,13 @@ public class TaskRepositoryImpl implements TaskRepository {
    * @return タスクのリスト（ID降順）
    */
   @Override
-  public List<Task> findAll() {
-    return taskDao.findAllByOrderByIdDesc();
+  public List<Task> findByPage(int limit, int offset) {
+    return taskDao.findByPage(limit, offset);
+  }
+
+  @Override
+  public long countAll() {
+    return taskDao.countAll();
   }
 
   /**
@@ -46,23 +51,18 @@ public class TaskRepositoryImpl implements TaskRepository {
   }
 
   /**
-   * タスクを保存します。 更新（IDが存在する場合）の際は、事前にDBからレコードを取得し、 存在することを確認してから更新後のインスタンスで上書き保存を行います。
+   * タスクを保存します。 IDが存在する場合はDBからレコードを取得し、存在確認をしてから更新します。
    *
-   * @param task 保存・更新対象のタスク
-   * @throws TaskNotFoundException 更新対象が存在しない場合
+   * @param task 保存対象のタスク
    */
   @Override
   public void save(Task task) {
     if (task.getId() != null) {
       taskDao.findById(task.getId())
-          .orElseThrow(() -> new TaskNotFoundException(
-              "更新対象のタスクが見つかりません。taskId=" + task.getId()));
-
-      taskDao.save(task);
-    } else {
-      // 新規登録の場合はそのまま保存
-      taskDao.save(task);
+          .orElseThrow(
+              () -> new TaskNotFoundException("更新対象が見つかりません。ID: " + task.getId()));
     }
+    taskDao.save(task);
   }
 
   /**
@@ -74,7 +74,7 @@ public class TaskRepositoryImpl implements TaskRepository {
   @Override
   public void deleteById(Integer id) {
     if (!taskDao.existsById(id)) {
-      throw new TaskNotFoundException("削除対象のタスクが見つかりません。taskId=" + id);
+      throw new TaskNotFoundException("削除対象が見つかりません。ID: " + id);
     }
     taskDao.deleteById(id);
   }

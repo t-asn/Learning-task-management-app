@@ -1,6 +1,8 @@
+-- 初期テストデータの投入
 INSERT INTO tasks (title, category, due_date)
-VALUES ('仮データ1', 'Spring', CURRENT_DATE + INTERVAL '7 days'),
-       ('仮データ2', 'Java', CURRENT_DATE + INTERVAL '3 days'),
-       ('仮データ3', 'その他', CURRENT_DATE + INTERVAL '5 days'),
-       ('仮データ4', 'その他', CURRENT_DATE + INTERVAL '10 days'),
-       ('仮データ5', 'Java', CURRENT_DATE);
+VALUES
+    ('Spring Bootの学習', 'Spring', CURRENT_DATE + INTERVAL '7 days'),
+    ('Java Silverの復習', 'Java', CURRENT_DATE + INTERVAL '3 days'),
+    ('SQLのJOINを練習', 'その他', CURRENT_DATE),
+    ('インフラ構成図の作成', 'その他', CURRENT_DATE + INTERVAL '10 days'),
+    ('ページネーションの実装', 'Spring', CURRENT_DATE + INTERVAL '1 days');

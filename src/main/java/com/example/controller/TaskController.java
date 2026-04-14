@@ -1,7 +1,7 @@
 package com.example.controller;
 
-import com.example.exception.TaskNotFoundException;
 import com.example.model.Task;
+import com.example.model.TaskPageResult;
 import com.example.service.TaskService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,11 +9,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.util.List;
 
 /**
- * タスク管理機能の画面制御を行うコントローラー。 一覧表示、新規登録、編集、削除の各リクエストを処理します。
+ * タスク管理機能の画面制御を行うコントローラー。
  */
 @Controller
 @RequestMapping("/tasks")
@@ -26,9 +25,7 @@ public class TaskController {
   }
 
   /**
-   * 各画面で共通して使用するカテゴリリストをModelに登録する。
-   *
-   * @return カテゴリ名のリスト
+   * 各画面で共通して使用するカテゴリリスト。
    */
   @ModelAttribute("categories")
   public List<String> categories() {
@@ -36,22 +33,32 @@ public class TaskController {
   }
 
   /**
-   * タスク一覧画面を表示する。
-   *
-   * @param model 画面に渡すデータを格納するModelオブジェクト
-   * @return タスク一覧画面のビュー名 (tasks/list)
+   * ページネーション対応のタスク一覧画面を表示します。 サービスから一括取得したデータを使用して、効率的に描画情報を計算します。
    */
   @GetMapping
-  public String list(Model model) {
-    model.addAttribute("tasks", taskService.getAllTasks());
+  public String list(
+      @RequestParam(defaultValue = "1") int page,
+      @RequestParam(defaultValue = "5") int size,
+      Model model) {
+
+    // サービスを一度呼び出し、リストと総件数の両方を取得
+    TaskPageResult result = taskService.getTasksByPage(page, size);
+    List<Task> tasks = result.tasks();
+    long totalCount = result.totalCount();
+
+    model.addAttribute("tasks", tasks);
+    model.addAttribute("currentPage", page);
+    model.addAttribute("pageSize", size);
+    model.addAttribute("totalPages", (int) Math.ceil((double) totalCount / size));
+    model.addAttribute("totalCount", totalCount);
+    model.addAttribute("startRange", totalCount == 0 ? 0 : (page - 1) * size + 1);
+    model.addAttribute("endRange", Math.min(page * size, (int) totalCount));
+
     return "tasks/list";
   }
 
   /**
-   * タスク新規登録画面を表示する。
-   *
-   * @param model 新規作成用の空のTaskオブジェクト
-   * @return タスク登録画面のビュー名 (tasks/form)
+   * 新規登録画面を表示します。
    */
   @GetMapping("/new")
   public String addForm(Model model) {
@@ -60,50 +67,35 @@ public class TaskController {
   }
 
   /**
-   * タスクの編集画面を表示する。 IDが存在しない場合は、メッセージを表示して一覧画面へリダイレクトする。
-   *
-   * @param taskId 編集対象のタスクID
-   * @param model  取得したタスクデータを格納するModel
-   * @return タスク入力画面のパス、または一覧画面へのリダイレクト
+   * 編集画面を表示します。
    */
   @GetMapping("/edit")
   public String editForm(@RequestParam Integer taskId, Model model) {
-    Task task = taskService.getTaskById(taskId);
-    model.addAttribute("task", task);
+    model.addAttribute("task", taskService.getTaskById(taskId));
     return "tasks/form";
   }
 
   /**
-   * タスクの保存（新規登録または更新）を行う。 バリデーションエラーがある場合は、入力内容を保持したままフォーム画面を再表示する。
-   *
-   * @param task   フォームからバインドされたタスクデータ
-   * @param result バリデーション結果
-   * @param model  エラー時の画面表示用データを格納するModel
-   * @param ra     成功時のリダイレクトメッセージ用
-   * @return 一覧画面へのリダイレクト、または入力エラー時のフォーム画面
+   * タスクの保存（新規登録または更新）を行います。
    */
   @PostMapping("/save")
-  public String save(@Validated @ModelAttribute Task task, BindingResult result, Model model,
+  public String save(@Validated @ModelAttribute Task task, BindingResult result,
       RedirectAttributes ra) {
     if (result.hasErrors()) {
       return "tasks/form";
     }
     taskService.saveTask(task);
-    ra.addFlashAttribute("message", "タスクを保存しました");
+    ra.addFlashAttribute("message", "タスクを保存しました。");
     return "redirect:/tasks";
   }
 
   /**
-   * タスクを削除し、一覧画面へリダイレクトする。
-   *
-   * @param taskId 削除対象のID
-   * @param ra     削除完了メッセージ用
-   * @return 一覧画面へのリダイレクト (/tasks)
+   * タスクを削除します。
    */
   @GetMapping("/delete")
   public String delete(@RequestParam Integer taskId, RedirectAttributes ra) {
     taskService.deleteTask(taskId);
-    ra.addFlashAttribute("message", "タスクを削除しました");
+    ra.addFlashAttribute("message", "タスクを削除しました。");
     return "redirect:/tasks";
   }
 }

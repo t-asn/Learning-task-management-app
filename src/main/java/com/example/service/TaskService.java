@@ -1,16 +1,25 @@
 package com.example.service;
 
 import com.example.model.Task;
+import com.example.model.TaskPageResult;
 import java.util.List;
 
 /**
- * タスク管理に関するビジネスロジックを定義するインターフェース。
+ * タスク管理のビジネスロジックを定義するインターフェース。
  */
 public interface TaskService {
 
-  List<Task> getAllTasks();
+  /**
+   * ページ番号と表示件数に基づき、結果をカプセル化したオブジェクトを取得します。
+   *
+   * @param page 現在のページ番号
+   * @param size 1ページあたりの表示件数
+   * @return タスクリストと総件数を含むTaskPageResult
+   */
+  TaskPageResult getTasksByPage(int page, int size);
 
-  // ポイント：戻り値は Optional ではなく Task 直接にする（Serviceで例外を投げるため）
+  long getTotalCount();
+
   Task getTaskById(Integer id);
 
   void saveTask(Task task);
