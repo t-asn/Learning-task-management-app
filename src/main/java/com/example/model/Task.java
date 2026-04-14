@@ -8,6 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
+/**
+ * タスクエンティティ。 tasks テーブルとマッピングされます。
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

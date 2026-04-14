@@ -53,7 +53,10 @@ public class TaskRepositoryImpl implements TaskRepository {
     taskDao.save(task);
   }
 
-
+  /**
+   * 指定されたIDのタスクを削除します。
+   * 削除前に存在確認を行います。
+   */
   @Override
   public void deleteById(Integer id) {
     if (!taskDao.existsById(id)) {
