@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.exception.InvalidPageException;
 import com.example.exception.TaskNotFoundException;
 import com.example.model.Task;
+import com.example.model.TaskPageResult;
 import com.example.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -22,11 +23,8 @@ public class TaskServiceImpl implements TaskService {
     this.categoryService = categoryService;
   }
 
-  /**
-   * ページ番号と表示件数に基づき、バリデーション済みのタスクリストを取得します。
-   */
-  @Override
-  public List<Task> getTasksByPage(int page, int size) {
+ 
+  public TaskPageResult getTasksByPage(int page, int size) {
     long totalCount = taskRepository.countAll();
     int totalPages = (int) Math.ceil((double) totalCount / size);
 
@@ -37,7 +35,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     int offset = (page - 1) * size;
-    return taskRepository.findByPage(size, offset);
+    List<Task> tasks = taskRepository.findByPage(size, offset);
+
+    return new TaskPageResult(tasks, totalCount);
   }
 
   @Override

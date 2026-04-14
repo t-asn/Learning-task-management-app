@@ -14,13 +14,6 @@ import java.util.List;
 public interface TaskDao extends CrudRepository<Task, Integer> {
 
   /**
-   * タスクをIDの降順で全件取得します。
-   *
-   * @return ID降順にソートされたタスクのリスト
-   */
-  List<Task> findAllByOrderByIdDesc();
-
-  /**
    * IDの降順で、指定された範囲のタスクを取得します。
    *
    * @param limit  取得件数 (1ページあたりの件数)

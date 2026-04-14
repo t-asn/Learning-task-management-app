@@ -21,33 +21,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 public class GlobalExceptionHandler {
 
   /**
-   * 不正なリクエスト（存在しないID、範囲外のページなど）を処理し、400エラー画面を表示します。
-   * ユーザー起因のエラーのため、WARN（警告）レベルでログを残します。
-   *
-   * @param ex 発生した例外
-   * @param model 画面へのデータ渡し用モデル
-   * @return エラー画面のテンプレートパス
-   */
-  @ExceptionHandler({
-      TaskNotFoundException.class,
-      CategoryNotFoundException.class,
-      InvalidPageException.class,
-      MethodArgumentTypeMismatchException.class
-  })
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public String handleBadRequest(Exception ex, Model model) {
-    // [ログ出力] 何の不正リクエストがあったかを1行で記録（スタックトレースは不要）
-    log.warn("400 Bad Request 検知: {}", ex.getMessage());
-
-    model.addAttribute("errorTitle", "400 Bad Request");
-    String detail = (ex instanceof MethodArgumentTypeMismatchException)
-        ? "URLのパラメータが不正です。" : ex.getMessage();
-    model.addAttribute("errorMessage", "リクエストを処理できませんでした: " + detail);
-
-    return "error/task-error";
-  }
-
-  /**
    * その他の予期せぬシステムエラー（DB接続失敗、SQL構文エラーなど）を処理し、500エラー画面を表示します。
    * システム障害の可能性があるため、ERROR（エラー）レベルで詳細なスタックトレースを記録します。
    *

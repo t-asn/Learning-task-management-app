@@ -2,7 +2,6 @@ package com.example.controller;
 
 import com.example.model.Category;
 import com.example.model.Task;
-import com.example.service.CategoryService;
 import com.example.service.TaskService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,7 +37,7 @@ public class TaskController {
   }
 
   /**
-   * ページネーション対応のタスク一覧画面を表示します。
+   * ページネーション対応のタスク一覧画面を表示します。 サービスから一括取得したデータを使用して、効率的に描画情報を計算します。
    */
   @GetMapping
   public String list(
@@ -46,8 +45,10 @@ public class TaskController {
       @RequestParam(defaultValue = "5") int size,
       Model model) {
 
-    long totalCount = taskService.getTotalCount();
-    List<Task> tasks = taskService.getTasksByPage(page, size);
+    // サービスを一度呼び出し、リストと総件数の両方を取得
+    TaskPageResult result = taskService.getTasksByPage(page, size);
+    List<Task> tasks = result.tasks();
+    long totalCount = result.totalCount();
 
     // ViewでカテゴリIDからカテゴリ名を表示するための変換マップを作成
     Map<Integer, String> categoryMap = categoryService.findAll().stream()
