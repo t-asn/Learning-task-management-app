@@ -3,14 +3,11 @@ package com.example.repository;
 import com.example.dao.TaskDao;
 import com.example.exception.TaskNotFoundException;
 import com.example.model.Task;
+import com.example.model.TaskWithCategoryRow;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * TaskRepositoryの実装クラス。
- * データの永続化において、存在確認を伴う安全な更新処理を提供します。
- */
 @Repository
 public class TaskRepositoryImpl implements TaskRepository {
 
@@ -21,13 +18,8 @@ public class TaskRepositoryImpl implements TaskRepository {
   }
 
   @Override
-  public List<Task> findAll() {
-    return taskDao.findAllByOrderByIdDesc();
-  }
-
-  @Override
-  public List<Task> findByPage(int limit, int offset) {
-    return taskDao.findByPage(limit, offset);
+  public List<TaskWithCategoryRow> findByPageWithCategory(int limit, int offset) {
+    return taskDao.findByPageWithCategory(limit, offset);
   }
 
   @Override
@@ -40,23 +32,14 @@ public class TaskRepositoryImpl implements TaskRepository {
     return taskDao.findById(id);
   }
 
-  /**
-   * タスクを保存します。
-   * 更新時は事前にDBからレコードを取得し、存在確認をしてから上書きします。
-   */
   @Override
   public void save(Task task) {
-    if (task.getId() != null) {
-      taskDao.findById(task.getId())
-          .orElseThrow(() -> new TaskNotFoundException("更新対象が見つかりません。ID: " + task.getId()));
+    if (task.getId() != null && !taskDao.existsById(task.getId())) {
+      throw new TaskNotFoundException("更新対象が見つかりません。ID: " + task.getId());
     }
     taskDao.save(task);
   }
 
-  /**
-   * 指定されたIDのタスクを削除します。
-   * 削除前に存在確認を行います。
-   */
   @Override
   public void deleteById(Integer id) {
     if (!taskDao.existsById(id)) {
