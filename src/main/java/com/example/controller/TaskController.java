@@ -11,8 +11,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * タスク一覧、登録、編集、削除の画面遷移を制御するコントローラー。
@@ -49,11 +47,7 @@ public class TaskController {
     long totalCount = taskService.getTotalCount();
     List<Task> tasks = taskService.getTasksByPage(page, size);
 
-    Map<Integer, String> categoryMap = categoryService.findAll().stream()
-        .collect(Collectors.toMap(Category::getId, Category::getName));
-
     model.addAttribute("tasks", tasks);
-    model.addAttribute("categoryMap", categoryMap);
     model.addAttribute("currentPage", page);
     model.addAttribute("pageSize", size);
     model.addAttribute("totalPages", (int) Math.ceil((double) totalCount / size));
