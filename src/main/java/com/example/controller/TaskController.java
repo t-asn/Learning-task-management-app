@@ -48,7 +48,7 @@ public class TaskController {
 
     long totalCount = taskService.getTotalCount();
     List<Task> tasks = taskService.getTasksByPage(page, size);
-    
+
     Map<Integer, String> categoryMap = categoryService.findAll().stream()
         .collect(Collectors.toMap(Category::getId, Category::getName));
 

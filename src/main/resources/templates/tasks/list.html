@@ -15,7 +15,7 @@
     }
 
     .navbar {
-      shadow-sm;
+      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
     }
 
     .card {
@@ -90,7 +90,7 @@
           </td>
           <td>
             <span class="badge bg-light text-dark border fw-normal"
-                  th:text="${task.categoryId}">1</span>
+                  th:text="${categoryMap[task.categoryId]}">カテゴリ名</span>
           </td>
           <td>
             <span
@@ -141,7 +141,8 @@
                 </a>
               </li>
               <li class="page-item"
-                  th:classappend="${i == currentPage} ? 'active'" th:each="i : ${#numbers.sequence(1, totalPages)}">
+                  th:classappend="${i == currentPage} ? 'active'"
+                  th:each="i : ${#numbers.sequence(1, totalPages)}">
                 <a class="page-link" th:href="@{/tasks(page=${i})}" th:text="${i}">1</a>
               </li>
               <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
