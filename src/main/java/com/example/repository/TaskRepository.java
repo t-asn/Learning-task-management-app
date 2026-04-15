@@ -1,15 +1,13 @@
 package com.example.repository;
 
 import com.example.model.Task;
+import com.example.model.TaskWithCategoryRow;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * タスクデータアクセスの抽象メソッドを定義するインターフェース。
- */
 public interface TaskRepository {
 
-  List<Task> findByPage(int limit, int offset);
+  List<TaskWithCategoryRow> findByPageWithCategory(int limit, int offset);
 
   long countAll();
 

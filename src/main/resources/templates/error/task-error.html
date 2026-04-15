@@ -1,12 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/common :: head('エラー')}"></head>
-<body class="bg-light d-flex align-items-center justify-content-center" style="height: 100vh;">
-<div class="text-center">
-  <h1 class="display-1 fw-bold text-danger" th:text="${errorTitle}">Error</h1>
-  <h3 class="mb-4">リクエストを処理できませんでした</h3>
-  <p class="text-muted mb-4" th:text="${errorMessage}"></p>
-  <a class="btn btn-primary btn-lg px-5 shadow-sm" th:href="@{/tasks}">一覧画面へ戻る</a>
+<body class="bg-light d-flex flex-column" style="min-height: 100vh;">
+<nav th:replace="~{layout/common :: navbar}"></nav>
+
+<div class="container d-flex flex-grow-1 align-items-center justify-content-center">
+  <div class="text-center bg-white p-5 rounded shadow-sm border-top border-danger border-5">
+    <h1 class="display-3 fw-bold text-danger mb-3" th:text="${errorTitle}">Error</h1>
+    <h3 class="h4 fw-bold mb-4">リクエストを処理できませんでした</h3>
+    <p class="text-muted mb-5 fs-5" th:text="${errorMessage}"></p>
+
+    <div class="d-flex justify-content-center gap-3">
+      <a class="btn btn-primary btn-lg px-4 shadow-sm" th:href="@{/tasks}">タスク一覧へ戻る</a>
+      <a class="btn btn-outline-secondary btn-lg px-4 shadow-sm"
+         th:href="@{/categories}">カテゴリ一覧へ戻る</a>
+    </div>
+  </div>
 </div>
 </body>
 </html>
