@@ -100,8 +100,8 @@
           </td>
           <td>
             <div class="btn-group btn-group-sm" role="group" aria-label="Status Update">
-              <a th:href="${task.status == 'TODO'} ? '#' : @{/tasks/updateStatus(taskId=${task.id}, status='TODO')}"
-                 th:classappend="${task.status == 'TODO'} ? 'btn-secondary disabled' : 'btn-outline-secondary'"
+              <a th:href="${task.status.name() == 'TODO'} ? '#' : @{/tasks/update-status(taskId=${task.id}, status='TODO')}"
+                 th:classappend="${task.status.name() == 'TODO'} ? 'btn-secondary disabled' : 'btn-outline-secondary'"
                  class="btn">TODO</a>
               <a th:href="${task.status == 'DOING'} ? '#' : @{/tasks/updateStatus(taskId=${task.id}, status='DOING')}"
                  th:classappend="${task.status == 'DOING'} ? 'btn-info text-white disabled' : 'btn-outline-info'"

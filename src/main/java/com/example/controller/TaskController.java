@@ -86,7 +86,7 @@ public class TaskController {
     return "redirect:/tasks";
   }
 
-  @GetMapping("/updateStatus")
+  @GetMapping("/update-status")
   public String updateStatus(
       @RequestParam Integer taskId,
       @RequestParam String status,
