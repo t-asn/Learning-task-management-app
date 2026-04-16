@@ -27,5 +27,15 @@ public class Task {
   @NotNull(message = "期限を入力してください")
   @FutureOrPresent(message = "過去の日付は登録できません")
   private LocalDate dueDate;
-  private String status = "TODO";
+
+  private TaskStatus status = TaskStatus.TODO;
+
+  /**
+   * ステータスを更新するドメインメソッド。 Setterを外部に公開せず、このメソッドを通じて状態を変更します。
+   */
+  public void changeStatus(TaskStatus newStatus) {
+    if (newStatus != null) {
+      this.status = newStatus;
+    }
+  }
 }
