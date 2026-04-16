@@ -5,6 +5,7 @@ import com.example.exception.InvalidPageException;
 import com.example.exception.TaskNotFoundException;
 import com.example.model.Task;
 import com.example.model.TaskPageResult;
+import com.example.model.TaskStatus;
 import com.example.model.TaskWithCategoryRow;
 import com.example.repository.TaskRepository;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class TaskServiceImpl implements TaskService {
    * ページネーション対応のタスク一覧取得。 N+1問題を回避した TaskWithCategoryRow のリストを返します。
    */
   @Override
+  @Transactional(readOnly = true)
   public TaskPageResult getTasksByPage(int page, int size) {
     long totalCount = taskRepository.countAll();
     int totalPages = (int) Math.ceil((double) totalCount / size);
@@ -55,23 +57,28 @@ public class TaskServiceImpl implements TaskService {
   @Override
   @Transactional
   public void updateStatus(Integer taskId, String newStatus) {
-    if (!List.of("TODO", "DOING", "DONE").contains(newStatus)) {
+    TaskStatus statusEnum;
+    try {
+      statusEnum = TaskStatus.valueOf(newStatus);
+    } catch (IllegalArgumentException e) {
       throw new IllegalArgumentException("不正なステータスです：status=" + newStatus);
     }
 
     Task task = taskDao.findByIdForUpdate(taskId)
         .orElseThrow(() -> new TaskNotFoundException("存在しないタスクです：taskId=" + taskId));
 
-    task.setStatus(newStatus);
+    task.changeStatus(statusEnum);
     taskDao.save(task);
   }
 
   @Override
+  @Transactional(readOnly = true)
   public long getTotalCount() {
     return taskRepository.countAll();
   }
 
   @Override
+  @Transactional(readOnly = true)
   public Task getTaskById(Integer id) {
     return taskRepository.findById(id)
         .orElseThrow(() -> new TaskNotFoundException("指定されたタスクが見つかりません。ID: " + id));

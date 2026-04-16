@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 /**
  * JOIN結果を受け取るDTO。
+ * statusをStringからTaskStatus(Enum)に変更しました。
  */
 public record TaskWithCategoryRow(
     Integer id,
@@ -11,5 +12,5 @@ public record TaskWithCategoryRow(
     Integer categoryId,
     String categoryName,
     LocalDate dueDate,
-    String status
+    TaskStatus status
 ) {}
