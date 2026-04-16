@@ -27,6 +27,5 @@ public class Task {
   @NotNull(message = "期限を入力してください")
   @FutureOrPresent(message = "過去の日付は登録できません")
   private LocalDate dueDate;
-  
   private String status = "TODO";
 }

@@ -14,4 +14,6 @@ public interface TaskService {
   void saveTask(Task task);
 
   void deleteTask(Integer id);
+
+  void updateStatus(Integer taskId, String newStatus);
 }

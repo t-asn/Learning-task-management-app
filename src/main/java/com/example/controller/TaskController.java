@@ -85,4 +85,15 @@ public class TaskController {
     ra.addFlashAttribute("message", "タスクを削除しました。");
     return "redirect:/tasks";
   }
+
+  @GetMapping("/updateStatus")
+  public String updateStatus(
+      @RequestParam Integer taskId,
+      @RequestParam String status,
+      RedirectAttributes ra) {
+
+    taskService.updateStatus(taskId, status);
+    ra.addFlashAttribute("message", "ステータスを更新しました。");
+    return "redirect:/tasks";
+  }
 }

@@ -43,6 +43,11 @@
       border-color: #0d6efd;
       color: white;
     }
+
+    .btn-group-sm .btn {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+    }
   </style>
 </head>
 <body>
@@ -59,7 +64,7 @@
   <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert"
        th:if="${message}">
     <i class="bi bi-check-circle-fill me-2"></i>
-    <span th:text="${message}">完了メッセージがここに入ります</span>
+    <span th:text="${message}">完了メッセージ</span>
     <button aria-label="閉じる" class="btn-close" data-bs-dismiss="alert" type="button"></button>
   </div>
 
@@ -75,11 +80,12 @@
       <table class="table table-hover align-middle mb-0">
         <thead>
         <tr>
-          <th class="ps-4" style="width: 10%;">ID</th>
-          <th style="width: 40%;">タイトル</th>
-          <th style="width: 15%;">カテゴリ</th>
+          <th class="ps-4" style="width: 8%;">ID</th>
+          <th style="width: 30%;">タイトル</th>
+          <th style="width: 12%;">カテゴリ</th>
+          <th style="width: 20%;">ステータス</th>
           <th style="width: 15%;">期限</th>
-          <th class="text-center pe-4" style="width: 20%;">操作</th>
+          <th class="text-center pe-4" style="width: 15%;">操作</th>
         </tr>
         </thead>
         <tbody>
@@ -93,29 +99,39 @@
                   th:text="${categoryMap[task.categoryId]}">カテゴリ名</span>
           </td>
           <td>
-            <span
-                th:classappend="${task.dueDate.isBefore(T(java.time.LocalDate).now())} ? 'overdue' : ''">
+            <div class="btn-group btn-group-sm" role="group" aria-label="Status Update">
+              <a th:href="${task.status == 'TODO'} ? '#' : @{/tasks/updateStatus(taskId=${task.id}, status='TODO')}"
+                 th:classappend="${task.status == 'TODO'} ? 'btn-secondary disabled' : 'btn-outline-secondary'"
+                 class="btn">TODO</a>
+              <a th:href="${task.status == 'DOING'} ? '#' : @{/tasks/updateStatus(taskId=${task.id}, status='DOING')}"
+                 th:classappend="${task.status == 'DOING'} ? 'btn-info text-white disabled' : 'btn-outline-info'"
+                 class="btn">DOING</a>
+              <a th:href="${task.status == 'DONE'} ? '#' : @{/tasks/updateStatus(taskId=${task.id}, status='DONE')}"
+                 th:classappend="${task.status == 'DONE'} ? 'btn-success disabled' : 'btn-outline-success'"
+                 class="btn">DONE</a>
+            </div>
+          </td>
+          <td>
+            <span th:classappend="${task.dueDate.isBefore(T(java.time.LocalDate).now())} ? 'overdue' : ''">
               <i class="bi bi-calendar3 me-1 small"></i>
               <span th:text="${task.dueDate}">2026-01-01</span>
             </span>
           </td>
           <td class="text-center pe-4">
             <div class="btn-group shadow-sm">
-              <a class="btn btn-sm btn-white border" th:href="@{/tasks/edit(taskId=${task.id})}"
-                 title="編集">
+              <a class="btn btn-sm btn-white border" th:href="@{/tasks/edit(taskId=${task.id})}" title="編集">
                 <i class="bi bi-pencil text-primary"></i>
               </a>
               <a class="btn btn-sm btn-white border"
                  onclick="return confirm('このタスクを削除してもよろしいですか？');"
-                 th:href="@{/tasks/delete(taskId=${task.id})}"
-                 title="削除">
+                 th:href="@{/tasks/delete(taskId=${task.id})}" title="削除">
                 <i class="bi bi-trash text-danger"></i>
               </a>
             </div>
           </td>
         </tr>
         <tr th:if="${#lists.isEmpty(tasks)}">
-          <td class="text-center py-5" colspan="5">
+          <td class="text-center py-5" colspan="6">
             <p class="text-muted mb-0">表示できるタスクがありません。</p>
           </td>
         </tr>
@@ -135,14 +151,11 @@
           <nav aria-label="Page navigation" th:if="${totalPages > 1}">
             <ul class="pagination pagination-sm justify-content-center justify-content-sm-end mb-0">
               <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                <a aria-label="Previous" class="page-link"
-                   th:href="@{/tasks(page=${currentPage - 1})}">
+                <a aria-label="Previous" class="page-link" th:href="@{/tasks(page=${currentPage - 1})}">
                   <span aria-hidden="true">&laquo;</span>
                 </a>
               </li>
-              <li class="page-item"
-                  th:classappend="${i == currentPage} ? 'active'"
-                  th:each="i : ${#numbers.sequence(1, totalPages)}">
+              <li class="page-item" th:classappend="${i == currentPage} ? 'active'" th:each="i : ${#numbers.sequence(1, totalPages)}">
                 <a class="page-link" th:href="@{/tasks(page=${i})}" th:text="${i}">1</a>
               </li>
               <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
