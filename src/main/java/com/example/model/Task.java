@@ -25,6 +25,8 @@ public class Task {
   private Integer categoryId;
 
   @NotNull(message = "期限を入力してください")
-  @FutureOrPresent(message = "過去の日付は登録できません。本日以降を選択してください")
+  @FutureOrPresent(message = "過去の日付は登録できません")
   private LocalDate dueDate;
+  
+  private String status = "TODO";
 }
