@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/tasks")
@@ -41,12 +39,7 @@ public class TaskController {
 
     TaskPageResult result = taskService.getTasksByPage(page, size);
 
-    // 表示デグレ防止用
-    Map<Integer, String> categoryMap = categoryService.findAll().stream()
-        .collect(Collectors.toMap(Category::getId, Category::getName));
-
     model.addAttribute("tasks", result.tasks());
-    model.addAttribute("categoryMap", categoryMap);
     model.addAttribute("currentPage", page);
     model.addAttribute("totalPages", (int) Math.ceil((double) result.totalCount() / size));
     model.addAttribute("totalCount", result.totalCount());
@@ -83,17 +76,6 @@ public class TaskController {
   public String delete(@RequestParam Integer taskId, RedirectAttributes ra) {
     taskService.deleteTask(taskId);
     ra.addFlashAttribute("message", "タスクを削除しました。");
-    return "redirect:/tasks";
-  }
-
-  @GetMapping("/update-status")
-  public String updateStatus(
-      @RequestParam Integer taskId,
-      @RequestParam String status,
-      RedirectAttributes ra) {
-
-    taskService.updateStatus(taskId, status);
-    ra.addFlashAttribute("message", "ステータスを更新しました。");
     return "redirect:/tasks";
   }
 }
