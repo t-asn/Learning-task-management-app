@@ -54,7 +54,8 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public void updateStatus(Integer taskId, String newStatus) {
-
+  public void updateStatus(Integer id, String status) {
+    Task task = getTaskById(id);
+    taskRepository.save(task);
   }
 }
