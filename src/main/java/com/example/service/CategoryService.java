@@ -4,7 +4,11 @@ import com.example.dao.CategoryDao;
 import com.example.exception.CategoryNotFoundException;
 import com.example.model.Category;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * カテゴリ管理のビジネスロジックを提供するサービスクラス。
@@ -20,10 +24,12 @@ public class CategoryService {
 
   /**
    * 全てのカテゴリを取得します。
-   * @return カテゴリのリスト
+   * Controller側の呼び出し名に合わせて findAll から getAllCategories に変更しました。
    */
-  public List<Category> findAll() {
-    return (List<Category>) categoryDao.findAll();
+  @Transactional(readOnly = true)
+  public List<Category> getAllCategories() {
+    return StreamSupport.stream(categoryDao.findAll().spliterator(), false)
+        .collect(Collectors.toList());
   }
 
   /**
@@ -32,6 +38,7 @@ public class CategoryService {
    * @return カテゴリエンティティ
    * @throws CategoryNotFoundException 存在しないIDが指定された場合
    */
+  @Transactional(readOnly = true)
   public Category getCategoryById(Integer id) {
     return categoryDao.findById(id)
         .orElseThrow(() -> new CategoryNotFoundException("指定されたカテゴリは存在しません。ID: " + id));

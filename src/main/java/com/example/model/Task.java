@@ -3,17 +3,12 @@ package com.example.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Table("tasks")
 public class Task {
-
   @Id
   private Integer id;
 
@@ -29,13 +24,4 @@ public class Task {
   private LocalDate dueDate;
 
   private TaskStatus status = TaskStatus.TODO;
-
-  /**
-   * ステータスを更新するドメインメソッド。 Setterを外部に公開せず、このメソッドを通じて状態を変更します。
-   */
-  public void changeStatus(TaskStatus newStatus) {
-    if (newStatus != null) {
-      this.status = newStatus;
-    }
-  }
 }
