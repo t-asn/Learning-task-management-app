@@ -7,17 +7,20 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TaskDao extends CrudRepository<Task, Integer> {
 
   @Query("""
-      SELECT t.id, t.title, t.category_id, c.name AS category_name, t.due_date 
-      FROM tasks t 
-      INNER JOIN categories c ON t.category_id = c.id 
-      ORDER BY t.id DESC LIMIT :limit OFFSET :offset
-      """)
+        SELECT t.id, t.title, t.category_id, c.name AS category_name, t.due_date, t.status 
+        FROM tasks t INNER JOIN categories c ON t.category_id = c.id 
+        ORDER BY t.id ASC LIMIT :limit OFFSET :offset
+        """)
   List<TaskWithCategoryRow> findByPageWithCategory(@Param("limit") int limit, @Param("offset") int offset);
+
+  @Query("SELECT * FROM tasks WHERE id = :id FOR UPDATE")
+  Optional<Task> findByIdForUpdate(@Param("id") Integer id);
 
   @Query("SELECT COUNT(*) FROM tasks")
   long countAll();

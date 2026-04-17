@@ -14,19 +14,9 @@
       font-family: 'Helvetica Neue', Arial, sans-serif;
     }
 
-    .navbar {
-      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-    }
-
     .card {
       border: none;
       border-radius: 0.75rem;
-      overflow: hidden;
-    }
-
-    .table thead {
-      background-color: #f8f9fa;
-      border-top: 1px solid #dee2e6;
     }
 
     .overdue {
@@ -34,14 +24,9 @@
       font-weight: bold;
     }
 
-    .pagination .page-link {
-      color: #495057;
-    }
-
-    .pagination .active .page-link {
-      background-color: #0d6efd;
-      border-color: #0d6efd;
-      color: white;
+    .btn-group-sm .btn {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
     }
   </style>
 </head>
@@ -59,7 +44,7 @@
   <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert"
        th:if="${message}">
     <i class="bi bi-check-circle-fill me-2"></i>
-    <span th:text="${message}">完了メッセージがここに入ります</span>
+    <span th:text="${message}">メッセージ</span>
     <button aria-label="閉じる" class="btn-close" data-bs-dismiss="alert" type="button"></button>
   </div>
 
@@ -73,30 +58,42 @@
 
     <div class="table-responsive">
       <table class="table table-hover align-middle mb-0">
-        <thead>
+        <thead class="table-light">
         <tr>
-          <th class="ps-4" style="width: 10%;">ID</th>
-          <th style="width: 40%;">タイトル</th>
+          <th class="ps-4" style="width: 8%;">ID</th>
+          <th style="width: 25%;">タイトル</th>
           <th style="width: 15%;">カテゴリ</th>
+          <th style="width: 22%;">ステータス</th>
           <th style="width: 15%;">期限</th>
-          <th class="text-center pe-4" style="width: 20%;">操作</th>
+          <th class="text-center pe-4" style="width: 15%;">操作</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="task : ${tasks}">
           <td class="ps-4 text-muted" th:text="${task.id}">1</td>
-          <td>
-            <span class="fw-semibold text-dark" th:text="${task.title}">タスク名</span>
-          </td>
+          <td><span class="fw-semibold text-dark" th:text="${task.title}">タイトル</span></td>
           <td>
             <span class="badge bg-light text-dark border fw-normal"
                   th:text="${categoryMap[task.categoryId]}">カテゴリ名</span>
           </td>
           <td>
+            <div class="btn-group btn-group-sm" role="group">
+              <a class="btn"
+                 th:classappend="${task.status.name() == 'TODO'} ? 'btn-secondary disabled' : 'btn-outline-secondary'"
+                 th:href="${task.status.name() == 'TODO'} ? '#' : @{/tasks/update-status(taskId=${task.id}, status='TODO')}">TODO</a>
+              <a class="btn"
+                 th:classappend="${task.status.name() == 'DOING'} ? 'btn-info text-white disabled' : 'btn-outline-info'"
+                 th:href="${task.status.name() == 'DOING'} ? '#' : @{/tasks/update-status(taskId=${task.id}, status='DOING')}">DOING</a>
+              <a class="btn"
+                 th:classappend="${task.status.name() == 'DONE'} ? 'btn-success disabled' : 'btn-outline-success'"
+                 th:href="${task.status.name() == 'DONE'} ? '#' : @{/tasks/update-status(taskId=${task.id}, status='DONE')}">DONE</a>
+            </div>
+          </td>
+          <td>
             <span
                 th:classappend="${task.dueDate.isBefore(T(java.time.LocalDate).now())} ? 'overdue' : ''">
               <i class="bi bi-calendar3 me-1 small"></i>
-              <span th:text="${task.dueDate}">2026-01-01</span>
+              <span th:text="${task.dueDate}">2026-04-17</span>
             </span>
           </td>
           <td class="text-center pe-4">
@@ -105,18 +102,11 @@
                  title="編集">
                 <i class="bi bi-pencil text-primary"></i>
               </a>
-              <a class="btn btn-sm btn-white border"
-                 onclick="return confirm('このタスクを削除してもよろしいですか？');"
-                 th:href="@{/tasks/delete(taskId=${task.id})}"
-                 title="削除">
+              <a class="btn btn-sm btn-white border" onclick="return confirm('削除しますか？');"
+                 th:href="@{/tasks/delete(taskId=${task.id})}" title="削除">
                 <i class="bi bi-trash text-danger"></i>
               </a>
             </div>
-          </td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(tasks)}">
-          <td class="text-center py-5" colspan="5">
-            <p class="text-muted mb-0">表示できるタスクがありません。</p>
           </td>
         </tr>
         </tbody>
@@ -125,30 +115,22 @@
 
     <div class="card-footer bg-white border-top-0 py-3">
       <div class="row align-items-center">
-        <div class="col-sm-6 text-center text-sm-start mb-3 mb-sm-0">
-          <small class="text-muted">
-            全 <span th:text="${totalCount}">0</span> 件中
-            <span th:text="${startRange}">0</span> - <span th:text="${endRange}">0</span> 件を表示
-          </small>
+        <div class="col-sm-6 text-muted small">
+          全 <span th:text="${totalCount}">0</span> 件中
+          <span th:text="${startRange}">0</span> - <span th:text="${endRange}">0</span> 件を表示
         </div>
         <div class="col-sm-6">
           <nav aria-label="Page navigation" th:if="${totalPages > 1}">
-            <ul class="pagination pagination-sm justify-content-center justify-content-sm-end mb-0">
+            <ul class="pagination pagination-sm justify-content-end mb-0">
               <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                <a aria-label="Previous" class="page-link"
-                   th:href="@{/tasks(page=${currentPage - 1})}">
-                  <span aria-hidden="true">&laquo;</span>
-                </a>
+                <a class="page-link" th:href="@{/tasks(page=${currentPage - 1})}">&laquo;</a>
               </li>
-              <li class="page-item"
-                  th:classappend="${i == currentPage} ? 'active'"
+              <li class="page-item" th:classappend="${i == currentPage} ? 'active'"
                   th:each="i : ${#numbers.sequence(1, totalPages)}">
                 <a class="page-link" th:href="@{/tasks(page=${i})}" th:text="${i}">1</a>
               </li>
               <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                <a aria-label="Next" class="page-link" th:href="@{/tasks(page=${currentPage + 1})}">
-                  <span aria-hidden="true">&raquo;</span>
-                </a>
+                <a class="page-link" th:href="@{/tasks(page=${currentPage + 1})}">&raquo;</a>
               </li>
             </ul>
           </nav>

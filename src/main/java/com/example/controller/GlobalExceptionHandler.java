@@ -21,7 +21,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 public class GlobalExceptionHandler {
 
   /**
-   * 不正なリクエスト（存在しないID、範囲外のページなど）を処理し、400エラー画面を表示します。
+   * 不正なリクエスト（存在しないID、範囲外のページ、不正なステータスなど）を処理し、400エラー画面を表示します。
    * ユーザー起因のエラーのため、WARN（警告）レベルでログを残します。
    *
    * @param ex 発生した例外
@@ -32,6 +32,7 @@ public class GlobalExceptionHandler {
       TaskNotFoundException.class,
       CategoryNotFoundException.class,
       InvalidPageException.class,
+      IllegalArgumentException.class,
       MethodArgumentTypeMismatchException.class
   })
   @ResponseStatus(HttpStatus.BAD_REQUEST)

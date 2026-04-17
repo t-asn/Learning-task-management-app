@@ -3,17 +3,12 @@ package com.example.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Table("tasks")
 public class Task {
-
   @Id
   private Integer id;
 
@@ -25,6 +20,8 @@ public class Task {
   private Integer categoryId;
 
   @NotNull(message = "期限を入力してください")
-  @FutureOrPresent(message = "過去の日付は登録できません。本日以降を選択してください")
+  @FutureOrPresent(message = "過去の日付は登録できません")
   private LocalDate dueDate;
+
+  private TaskStatus status = TaskStatus.TODO;
 }

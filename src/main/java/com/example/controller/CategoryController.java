@@ -23,20 +23,26 @@ public class CategoryController {
 
   /**
    * カテゴリ一覧画面を表示します。
+   * Service側のメソッド名変更に合わせて修正しました。
    */
   @GetMapping
   public String list(Model model) {
-    model.addAttribute("categories", categoryService.findAll());
+    // findAll() から getAllCategories() へ修正
+    model.addAttribute("categories", categoryService.getAllCategories());
     return "categories/list";
   }
 
   /**
-   * 指定されたカテゴリの詳細（紐づくタスク一覧を含む）を表示します。
+   * 指定されたカテゴリの詳細を表示します。
    */
   @GetMapping("/{id}")
   public String detail(@PathVariable Integer id, Model model) {
     Category category = categoryService.getCategoryById(id);
     model.addAttribute("category", category);
+
+    // 【補足】もし詳細画面で「そのカテゴリに属するタスク一覧」を出したい場合は、
+    // 今後 taskService.findByCategoryId(id) などを呼んで model に追加する形になります。
+
     return "categories/detail";
   }
 }
