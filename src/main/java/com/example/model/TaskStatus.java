@@ -4,7 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum TaskStatus {
-  TODO, DOING, DONE;
+
+  TODO,
+  DOING,
+  DONE;
 
   public static TaskStatus of(String statusName) {
     try {

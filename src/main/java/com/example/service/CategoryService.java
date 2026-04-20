@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.dao.CategoryDao;
 import com.example.exception.CategoryNotFoundException;
 import com.example.model.Category;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +25,6 @@ public class CategoryService {
 
   /**
    * 全てのカテゴリを取得します。
-   * Controller側の呼び出し名に合わせて findAll から getAllCategories に変更しました。
    */
   @Transactional(readOnly = true)
   public List<Category> getAllCategories() {
@@ -34,6 +34,7 @@ public class CategoryService {
 
   /**
    * 指定されたIDのカテゴリを取得します。
+   *
    * @param id カテゴリID
    * @return カテゴリエンティティ
    * @throws CategoryNotFoundException 存在しないIDが指定された場合

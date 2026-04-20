@@ -12,6 +12,7 @@ public class LearningTaskManagementAppApplication {
 
   /**
    * アプリケーションのエントリーポイント。
+   *
    * @param args コマンドライン引数
    */
   public static void main(String[] args) {

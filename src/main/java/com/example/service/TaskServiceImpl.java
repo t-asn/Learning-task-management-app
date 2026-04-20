@@ -2,15 +2,22 @@ package com.example.service;
 
 import com.example.dao.TaskDao;
 import com.example.exception.TaskNotFoundException;
-import com.example.model.*;
+import com.example.model.Task;
+import com.example.model.TaskPageResult;
+import com.example.model.TaskStatus;
+import com.example.model.TaskWithCategoryRow;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
+
   private final TaskDao taskDao;
 
   @Override
@@ -25,7 +32,6 @@ public class TaskServiceImpl implements TaskService {
   @Override
   @Transactional
   public void updateStatus(Integer taskId, TaskStatus newStatus) {
-    // 悲観ロック付きで取得
     Task task = taskDao.findByIdForUpdate(taskId)
         .orElseThrow(() -> new TaskNotFoundException("ID:" + taskId + "は見つかりません"));
     task.setStatus(newStatus);
@@ -34,19 +40,26 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   @Transactional
-  public void saveTask(Task task) { taskDao.save(task); }
+  public void saveTask(Task task) {
+    taskDao.save(task);
+  }
 
   @Override
   @Transactional
-  public void deleteTask(Integer id) { taskDao.deleteById(id); }
-
-  @Override
-  @Transactional(readOnly = true)
-  public Task getTaskById(Integer id) {
-    return taskDao.findById(id).orElseThrow(() -> new TaskNotFoundException("ID:" + id + "は見つかりません"));
+  public void deleteTask(Integer id) {
+    taskDao.deleteById(id);
   }
 
   @Override
   @Transactional(readOnly = true)
-  public long getTotalCount() { return taskDao.countAll(); }
+  public Task getTaskById(Integer id) {
+    return taskDao.findById(id)
+        .orElseThrow(() -> new TaskNotFoundException("ID:" + id + "は見つかりません"));
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public long getTotalCount() {
+    return taskDao.countAll();
+  }
 }

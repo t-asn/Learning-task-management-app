@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.model.Category;
 import com.example.service.CategoryService;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,11 +24,9 @@ public class CategoryController {
 
   /**
    * カテゴリ一覧画面を表示します。
-   * Service側のメソッド名変更に合わせて修正しました。
    */
   @GetMapping
   public String list(Model model) {
-    // findAll() から getAllCategories() へ修正
     model.addAttribute("categories", categoryService.getAllCategories());
     return "categories/list";
   }
@@ -39,10 +38,6 @@ public class CategoryController {
   public String detail(@PathVariable Integer id, Model model) {
     Category category = categoryService.getCategoryById(id);
     model.addAttribute("category", category);
-
-    // 【補足】もし詳細画面で「そのカテゴリに属するタスク一覧」を出したい場合は、
-    // 今後 taskService.findByCategoryId(id) などを呼んで model に追加する形になります。
-
     return "categories/detail";
   }
 }

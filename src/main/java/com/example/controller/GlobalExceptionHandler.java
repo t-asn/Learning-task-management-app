@@ -37,7 +37,6 @@ public class GlobalExceptionHandler {
   })
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public String handleBadRequest(Exception ex, Model model) {
-    // [ログ出力] 何の不正リクエストがあったかを1行で記録（スタックトレースは不要）
     log.warn("400 Bad Request 検知: {}", ex.getMessage());
 
     model.addAttribute("errorTitle", "400 Bad Request");
@@ -59,7 +58,6 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public String handleGeneralException(Exception ex, Model model) {
-    // [ログ出力] 開発・運用時の原因究明のため、エラー内容とスタックトレースを詳細に記録
     log.error("500 Internal Server Error: 予期せぬシステム例外が発生しました", ex);
 
     model.addAttribute("errorTitle", "500 System Error");

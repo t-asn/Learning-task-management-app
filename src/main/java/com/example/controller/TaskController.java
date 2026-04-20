@@ -1,14 +1,23 @@
 package com.example.controller;
 
-import com.example.model.*;
+import com.example.model.Category;
+import com.example.model.Task;
+import com.example.model.TaskPageResult;
+import com.example.model.TaskStatus;
 import com.example.service.CategoryService;
 import com.example.service.TaskService;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -39,7 +48,6 @@ public class TaskController {
 
     TaskPageResult result = taskService.getTasksByPage(page, size);
 
-    // カテゴリマスタをMap形式で取得（ID -> 名称）
     List<Category> allCategories = categoryService.getAllCategories();
     Map<Integer, String> categoryMap = allCategories.stream()
         .collect(Collectors.toMap(Category::getId, Category::getName));
@@ -50,7 +58,6 @@ public class TaskController {
     model.addAttribute("totalPages", (int) Math.ceil((double) result.totalCount() / size));
     model.addAttribute("totalCount", result.totalCount());
 
-    // ページネーション表示用
     int startRange = result.totalCount() == 0 ? 0 : (page - 1) * size + 1;
     int endRange = Math.min(page * size, (int) result.totalCount());
     model.addAttribute("startRange", startRange);
@@ -86,7 +93,9 @@ public class TaskController {
   }
 
   @PostMapping("/save")
-  public String save(@Validated @ModelAttribute Task task, BindingResult result,
+  public String save(
+      @Validated @ModelAttribute Task task,
+      BindingResult result,
       RedirectAttributes ra) {
     if (result.hasErrors()) {
       return "tasks/form";

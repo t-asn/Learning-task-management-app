@@ -4,7 +4,9 @@ import com.example.dao.TaskDao;
 import com.example.exception.TaskNotFoundException;
 import com.example.model.Task;
 import com.example.model.TaskWithCategoryRow;
+
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Optional;
 
