@@ -5,15 +5,12 @@ import com.example.api.dto.ApiFieldError;
 import com.example.exception.CategoryNotFoundException;
 import com.example.exception.TaskNotFoundException;
 import jakarta.validation.ConstraintViolationException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -24,36 +21,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * REST API 用の JSON エラーレスポンス。
+ * REST API 用の例外ハンドラ。
  */
 @Slf4j
 @RestControllerAdvice(basePackages = "com.example.api")
 @Order(Ordered.HIGHEST_PRECEDENCE)
+@RequiredArgsConstructor
 public class ApiExceptionHandler {
 
-  private final MessageSource messageSource;
-
-  /**
-   * コンストラクタ。
-   *
-   * @param messageSource メッセージソース
-   */
-  public ApiExceptionHandler(MessageSource messageSource) {
-    this.messageSource = messageSource;
-  }
+  private final ApiErrorResponseFactory responseFactory;
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ApiErrorBody> handleMethodArgumentNotValid(
       MethodArgumentNotValidException ex) {
-    List<ApiFieldError> fieldErrors = new ArrayList<>();
-    for (FieldError fe : ex.getBindingResult().getFieldErrors()) {
-      String message = messageSource.getMessage(fe, LocaleContextHolder.getLocale());
-      fieldErrors.add(new ApiFieldError(fe.getField(), message));
-    }
-    String globalMessage = messageSource.getMessage("api.error.bad_request", null,
-        LocaleContextHolder.getLocale());
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(ApiErrorBody.badRequest(globalMessage, fieldErrors));
+    return responseFactory.buildBadRequestResponse(ex);
   }
 
   @ExceptionHandler(ConstraintViolationException.class)
@@ -65,10 +46,7 @@ public class ApiExceptionHandler {
           return new ApiFieldError(field, v.getMessage());
         })
         .toList();
-    String globalMessage = messageSource.getMessage("api.error.bad_request", null,
-        LocaleContextHolder.getLocale());
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(ApiErrorBody.badRequest(globalMessage, fieldErrors));
+    return responseFactory.buildBadRequestResponse(fieldErrors);
   }
 
   @ExceptionHandler(HandlerMethodValidationException.class)
@@ -77,54 +55,42 @@ public class ApiExceptionHandler {
     List<ApiFieldError> fieldErrors = new ArrayList<>();
     ex.getParameterValidationResults().forEach(result ->
         result.getResolvableErrors().forEach(err -> {
-          String message = messageSource.getMessage(err, LocaleContextHolder.getLocale());
+          String message = responseFactory.getMessage(err);
           fieldErrors.add(
               new ApiFieldError(result.getMethodParameter().getParameterName(), message));
         })
     );
-    String globalMessage = messageSource.getMessage("api.error.bad_request", null,
-        LocaleContextHolder.getLocale());
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(ApiErrorBody.badRequest(globalMessage, fieldErrors));
+    return responseFactory.buildBadRequestResponse(fieldErrors);
   }
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<ApiErrorBody> handleNotReadable(HttpMessageNotReadableException ex) {
-    String globalMessage = messageSource.getMessage("api.error.bad_request", null,
-        LocaleContextHolder.getLocale());
     var cause = ex.getMostSpecificCause();
     String rootMsg = cause != null ? cause.getMessage() : ex.getMessage();
     String field = (rootMsg != null && rootMsg.toLowerCase().contains("status"))
         ? "status" : "requestBody";
     List<ApiFieldError> fieldErrors = List.of(
         new ApiFieldError(field, "JSONの形式が不正です、または想定外の値です"));
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(ApiErrorBody.badRequest(globalMessage, fieldErrors));
+    return responseFactory.buildBadRequestResponse(fieldErrors);
   }
 
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
   public ResponseEntity<ApiErrorBody> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
-    String globalMessage = messageSource.getMessage("api.error.bad_request", null,
-        LocaleContextHolder.getLocale());
     String name = ex.getName() != null ? ex.getName() : "parameter";
     List<ApiFieldError> fieldErrors = List.of(
         new ApiFieldError(name, "入力値の型が正しくありません。"));
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(ApiErrorBody.badRequest(globalMessage, fieldErrors));
+    return responseFactory.buildBadRequestResponse(fieldErrors);
   }
 
   @ExceptionHandler({TaskNotFoundException.class, CategoryNotFoundException.class})
   public ResponseEntity<ApiErrorBody> handleNotFound(RuntimeException ex) {
     log.warn("404 Not Found (API): {}", ex.getMessage());
-    String globalMessage = messageSource.getMessage("api.error.not_found", null,
-        LocaleContextHolder.getLocale());
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiErrorBody.notFound(globalMessage));
+    return responseFactory.buildNotFoundResponse();
   }
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ApiErrorBody> handleAny(Exception ex) {
     log.error("500 Internal Server Error (API)", ex);
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .body(ApiErrorBody.internalServerError("予期しないエラーが発生しました"));
+    return responseFactory.buildInternalServerErrorResponse();
   }
 }
