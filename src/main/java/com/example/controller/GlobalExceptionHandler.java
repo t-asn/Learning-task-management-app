@@ -36,7 +36,8 @@ public class GlobalExceptionHandler {
     log.warn("404 Not Found 検知: {}", ex.getMessage());
 
     model.addAttribute("errorTitle", "404 Not Found");
-    model.addAttribute("errorMessage", "指定されたリソースが見つかりませんでした。URLが正しいかご確認ください。");
+    model.addAttribute("errorMessage",
+        "指定されたリソースが見つかりませんでした。URLが正しいかご確認ください。");
 
     return "error/task-error";
   }
@@ -69,7 +70,8 @@ public class GlobalExceptionHandler {
     log.error("500 Internal Server Error: 予期せぬシステム例外が発生しました", ex);
 
     model.addAttribute("errorTitle", "500 System Error");
-    model.addAttribute("errorMessage", "申し訳ございません。予期せぬエラーが発生しました。システム管理者に連絡してください。");
+    model.addAttribute("errorMessage",
+        "申し訳ございません。予期せぬエラーが発生しました。システム管理者に連絡してください。");
 
     return "error/task-error";
   }

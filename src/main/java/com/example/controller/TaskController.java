@@ -38,7 +38,6 @@ public class TaskController {
    */
   @ModelAttribute("categories")
   public List<Category> populateCategories() {
-    // CategoryServiceの定義に合わせて getAllCategories() を呼び出します
     List<Category> categories = categoryService.getAllCategories();
     if (categories == null) {
       log.error("CategoryService.getAllCategories() returned NULL.");
@@ -64,7 +63,6 @@ public class TaskController {
   @GetMapping("/new")
   public String addForm(Model model) {
     model.addAttribute("task", new Task());
-    // 明示的にセット
     model.addAttribute("categories", populateCategories());
     return "tasks/form";
   }

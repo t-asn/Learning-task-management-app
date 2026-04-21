@@ -39,8 +39,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   /**
-   * 【追加パーツ】カテゴリIDに紐づくタスク一覧を取得します。
-   * カテゴリ詳細画面で使用されます。
+   * カテゴリIDに紐づくタスク一覧を取得します。 カテゴリ詳細画面で使用されます。
    */
   @Override
   @Transactional(readOnly = true)

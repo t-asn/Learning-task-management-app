@@ -15,12 +15,12 @@ import java.util.Optional;
 public interface TaskDao extends CrudRepository<Task, Integer> {
 
   @Query("""
-    SELECT t.*, c.name as category_name 
-    FROM tasks t 
-    JOIN categories c ON t.category_id = c.id 
-    ORDER BY t.id DESC 
-    LIMIT :size OFFSET :offset
-    """)
+      SELECT t.*, c.name as category_name 
+      FROM tasks t 
+      JOIN categories c ON t.category_id = c.id 
+      ORDER BY t.id DESC 
+      LIMIT :size OFFSET :offset
+      """)
   List<TaskWithCategoryRow> findByPageWithCategory(int size, int offset);
 
   @Query("SELECT * FROM tasks WHERE id = :id FOR UPDATE")

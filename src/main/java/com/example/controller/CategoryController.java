@@ -28,7 +28,9 @@ public class CategoryController {
     this.taskService = taskService;
   }
 
-  /** 一覧表示 */
+  /**
+   * 一覧表示
+   */
   @GetMapping
   public String list(Model model) {
     model.addAttribute("categories", categoryService.getAllCategories());
@@ -39,20 +41,23 @@ public class CategoryController {
     return "categories/list";
   }
 
-  /** 詳細表示（＆編集） */
+  /**
+   * 詳細表示（＆編集）
+   */
   @GetMapping("/{id}")
   public String detail(@PathVariable Integer id, Model model) {
     Category category = categoryService.getCategoryById(id);
     model.addAttribute("category", category);
 
-    // 【実用的パーツ】このカテゴリに紐づくタスクを一覧表示
     List<Task> tasks = taskService.getTasksByCategoryId(id);
     model.addAttribute("tasks", tasks);
 
     return "categories/detail";
   }
 
-  /** 新規登録 */
+  /**
+   * 新規登録
+   */
   @PostMapping("/save")
   public String save(@Validated @ModelAttribute Category category, BindingResult result,
       RedirectAttributes ra, Model model) {
@@ -65,12 +70,13 @@ public class CategoryController {
     return "redirect:/categories";
   }
 
-  /** 更新処理 */
+  /**
+   * 更新処理
+   */
   @PostMapping("/{id}/update")
   public String update(@PathVariable Integer id, @Validated @ModelAttribute Category category,
       BindingResult result, RedirectAttributes ra, Model model) {
     if (result.hasErrors()) {
-      // エラー時は詳細画面に戻すため、タスク一覧を再ロード
       model.addAttribute("tasks", taskService.getTasksByCategoryId(id));
       return "categories/detail";
     }
@@ -79,15 +85,17 @@ public class CategoryController {
     return "redirect:/categories";
   }
 
-  /** 削除処理 */
+  /**
+   * 削除処理
+   */
   @GetMapping("/{id}/delete")
   public String delete(@PathVariable Integer id, RedirectAttributes ra) {
     try {
       categoryService.deleteCategory(id);
       ra.addFlashAttribute("message", "カテゴリを削除しました。");
     } catch (Exception e) {
-      // 外来キー制約（タスクが紐づいている場合）のエラーハンドリング
-      ra.addFlashAttribute("errorMessage", "このカテゴリはタスクで使用されているため削除できません。");
+      ra.addFlashAttribute("errorMessage",
+          "このカテゴリはタスクで使用されているため削除できません。");
     }
     return "redirect:/categories";
   }

@@ -13,15 +13,15 @@ public record ApiErrorBody(
     List<ApiFieldError> fieldErrors
 ) {
 
-  public static ApiErrorBody badRequest(List<ApiFieldError> fieldErrors) {
-    return new ApiErrorBody(400, "BAD_REQUEST", "入力値が不正です", fieldErrors);
+  public static ApiErrorBody badRequest(String message, List<ApiFieldError> fieldErrors) {
+    return new ApiErrorBody(400, "BAD_REQUEST", message, fieldErrors);
   }
 
-  public static ApiErrorBody notFound() {
-    return new ApiErrorBody(404, "NOT_FOUND", "指定されたリソースは存在しません", null);
+  public static ApiErrorBody notFound(String message) {
+    return new ApiErrorBody(404, "NOT_FOUND", message, null);
   }
 
-  public static ApiErrorBody internalServerError() {
-    return new ApiErrorBody(500, "INTERNAL_SERVER_ERROR", "予期しないエラーが発生しました", null);
+  public static ApiErrorBody internalServerError(String message) {
+    return new ApiErrorBody(500, "INTERNAL_SERVER_ERROR", message, null);
   }
 }

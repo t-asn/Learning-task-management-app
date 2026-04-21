@@ -12,3 +12,6 @@ spring:
   sql:
     init:
       mode: always
+  web:
+    locale: ja
+    locale-resolver: fixed

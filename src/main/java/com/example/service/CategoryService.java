@@ -16,7 +16,7 @@ import java.util.stream.StreamSupport;
  */
 @Service
 @RequiredArgsConstructor
-public class CategoryService { // インターフェースにしない場合は implements は不要です
+public class CategoryService {
 
   private final CategoryDao categoryDao;
 
@@ -34,7 +34,7 @@ public class CategoryService { // インターフェースにしない場合は 
   }
 
   /**
-   * 【追加】カテゴリを保存します
+   * カテゴリを保存します
    */
   @Transactional
   public void saveCategory(Category category) {
@@ -42,7 +42,7 @@ public class CategoryService { // インターフェースにしない場合は 
   }
 
   /**
-   * 【追加】カテゴリ名を更新します
+   * カテゴリ名を更新します
    */
   @Transactional
   public void updateCategory(Integer id, String name) {
@@ -52,7 +52,7 @@ public class CategoryService { // インターフェースにしない場合は 
   }
 
   /**
-   * 【追加】カテゴリを削除します
+   * カテゴリを削除します
    */
   @Transactional
   public void deleteCategory(Integer id) {
@@ -63,7 +63,7 @@ public class CategoryService { // インターフェースにしない場合は 
   }
 
   /**
-   * 【追加】findAll() を呼び出している箇所への互換性維持
+   * findAll() を呼び出している箇所への互換性維持
    */
   public List<Category> findAll() {
     return getAllCategories();

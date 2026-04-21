@@ -1,153 +1,92 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <title>詳細 - Aero Ultimate</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-        rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-        rel="stylesheet">
-  <style>
-    html, body {
-      background: radial-gradient(circle at 80% 20%, rgba(0, 150, 255, 0.4) 0%, transparent 40%), radial-gradient(circle at 20% 80%, rgba(50, 255, 150, 0.3) 0%, transparent 50%), radial-gradient(circle at center, #1a4a8c 0%, transparent 70%), #0a1a33 !important;
-      background-attachment: fixed !important;
-      min-height: 100vh;
-      font-family: 'Segoe UI', sans-serif;
-      color: #ffffff !important;
-      overflow-x: hidden;
-    }
-
-    @keyframes windowOpen {
-      0% {
-        transform: scale(0.8) translateZ(-500px) rotateX(15deg);
-        opacity: 0;
-        filter: blur(15px);
-      }
-      100% {
-        transform: scale(1) translateZ(0) rotateX(0);
-        opacity: 1;
-        filter: blur(0);
-      }
-    }
-
-    .aero-window {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(25px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 12px;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
-      margin-top: 2rem;
-      animation: windowOpen 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
-      overflow: hidden;
-    }
-
-    .aero-title-bar {
-      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%);
-      padding: 15px 25px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .table-aero {
-      --bs-table-bg: rgba(255, 255, 255, 0.1) !important;
-      --bs-table-color: #ffffff !important;
-      color: #ffffff !important;
-    }
-
-    .table-aero tr:hover {
-      background: rgba(255, 255, 255, 0.2) !important;
-      transform: scale(1.002);
-    }
-
-    .form-control {
-      background: rgba(255, 255, 255, 0.85) !important;
-      color: #000 !important;
-      font-weight: 500;
-    }
-
-    .btn-aero-blue {
-      background: linear-gradient(to bottom, #f9fbfd 0%, #76b5e0 48%, #318cc7 49%, #84c5ef 100%);
-      border: 1px solid #3c7fb1;
-      color: #001d3d !important;
-      font-weight: bold;
-      transition: all 0.2s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn-aero-blue::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 50%;
-      height: 100%;
-      background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.4), transparent);
-      transform: skewX(-25deg);
-      transition: 0.5s;
-    }
-
-    .btn-aero-blue:hover::after {
-      left: 150%;
-    }
-
-    .btn-aero-blue:active {
-      transform: translateY(2px) scale(0.96);
-      box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.5);
-    }
-  </style>
-</head>
+<head th:replace="~{layout/common :: head('カテゴリ詳細')}"></head>
 <body>
-<nav class="navbar navbar-dark" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);">
-  <div class="container"><a class="navbar-brand fw-bold" th:href="@{/tasks}">Task Manager</a></div>
-</nav>
+<nav th:replace="~{layout/common :: navbar}"></nav>
+
 <div class="container pb-5">
   <div class="row g-4 mt-4">
     <div class="col-md-4">
       <div class="aero-window h-100">
-        <div class="aero-title-bar fw-bold"><i class="bi bi-pencil-square me-2"></i>名称の編集</div>
+        <div class="aero-title-bar fw-bold">
+          <i class="bi bi-pencil-square me-2"></i>名称の編集
+        </div>
         <div class="card-body p-4">
           <form method="post" th:action="@{/categories/{id}/update(id=${category.id})}"
                 th:object="${category}">
             <div class="mb-4">
-              <label class="form-label small text-white">ID:</label>
+              <label class="form-label small fw-bold text-white">
+                <i class="bi bi-hash me-1"></i>ID:
+              </label>
               <input class="form-control" readonly th:field="*{id}" type="text">
             </div>
             <div class="mb-4">
-              <label class="form-label small text-white">名称:</label>
+              <label class="form-label small fw-bold text-white">
+                <i class="bi bi-textbox me-1"></i>名称:
+              </label>
               <input class="form-control" th:field="*{name}" type="text">
             </div>
-            <button class="btn btn-aero-blue w-100 py-2" type="submit">変更を保存</button>
+            <button class="btn btn-aero-blue w-100 py-2 mb-3" type="submit">
+              <i class="bi bi-check-circle me-1"></i>変更を保存
+            </button>
           </form>
           <hr class="border-white opacity-25">
-          <a class="btn btn-sm btn-outline-light w-100"
-             onclick="return confirm('削除しますか？');" th:href="@{/categories/{id}/delete(id=${category.id})}">このカテゴリを抹消</a>
+          <a class="btn btn-outline-light w-100 btn-sm"
+             onclick="return confirm('本当に削除しますか？');"
+             th:href="@{/categories/{id}/delete(id=${category.id})}">
+            <i class="bi bi-trash me-1"></i>このカテゴリを抹消
+          </a>
         </div>
       </div>
     </div>
     <div class="col-md-8">
       <div class="aero-window h-100">
-        <div class="aero-title-bar fw-bold">「<span th:text="${category.name}"></span>」に紐づくタスク
+        <div class="aero-title-bar fw-bold">
+          <i class="bi bi-list-check me-2"></i>「<span th:text="${category.name}"></span>」に紐づくタスク
         </div>
-        <table class="table table-aero align-middle mb-0">
-          <thead>
-          <tr>
-            <th class="ps-4">タイトル</th>
-            <th>期限</th>
-            <th class="pe-4">状態</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr th:each="task : ${tasks}">
-            <td class="ps-4 fw-bold" th:text="${task.title}"></td>
-            <td th:text="${task.dueDate}"></td>
-            <td class="pe-4"><span class="badge border border-white border-opacity-50"
-                                   th:text="${task.status.displayName}"></span></td>
-          </tr>
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="table table-aero align-middle mb-0">
+            <thead>
+            <tr>
+              <th class="ps-4">
+                <i class="bi bi-file-text me-2"></i>タイトル
+              </th>
+              <th>
+                <i class="bi bi-calendar me-2"></i>期限
+              </th>
+              <th class="pe-4 text-center">
+                <i class="bi bi-flag me-2"></i>状態
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(tasks)}">
+              <td class="text-center text-white-50 py-4" colspan="3">
+                このカテゴリに紐付くタスクはありません
+              </td>
+            </tr>
+            <tr th:each="task : ${tasks}">
+              <td class="ps-4 fw-bold" th:text="${task.title}"></td>
+              <td th:text="${task.dueDate}"></td>
+              <td class="pe-4 text-center">
+                <span class="badge border border-white border-opacity-50"
+                      th:text="${task.status.displayName}"></span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
+  <div class="text-center mt-4">
+    <a class="btn btn-outline-light px-4" th:href="@{/categories}">
+      <i class="bi bi-arrow-left me-2"></i>カテゴリ一覧に戻る
+    </a>
+  </div>
+</div>
+</body>
+</html>
 </div>
 </body>
 </html>

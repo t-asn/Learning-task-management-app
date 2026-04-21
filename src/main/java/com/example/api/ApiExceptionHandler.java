@@ -22,7 +22,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * REST API 用の JSON エラーレスポンス。
@@ -48,11 +47,13 @@ public class ApiExceptionHandler {
       MethodArgumentNotValidException ex) {
     List<ApiFieldError> fieldErrors = new ArrayList<>();
     for (FieldError fe : ex.getBindingResult().getFieldErrors()) {
-      // MessageSourceを使用してValidationMessages.propertiesからメッセージを取得
       String message = messageSource.getMessage(fe, LocaleContextHolder.getLocale());
       fieldErrors.add(new ApiFieldError(fe.getField(), message));
     }
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiErrorBody.badRequest(fieldErrors));
+    String globalMessage = messageSource.getMessage("api.error.bad_request", null,
+        LocaleContextHolder.getLocale());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body(ApiErrorBody.badRequest(globalMessage, fieldErrors));
   }
 
   @ExceptionHandler(ConstraintViolationException.class)
@@ -64,7 +65,10 @@ public class ApiExceptionHandler {
           return new ApiFieldError(field, v.getMessage());
         })
         .toList();
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiErrorBody.badRequest(fieldErrors));
+    String globalMessage = messageSource.getMessage("api.error.bad_request", null,
+        LocaleContextHolder.getLocale());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body(ApiErrorBody.badRequest(globalMessage, fieldErrors));
   }
 
   @ExceptionHandler(HandlerMethodValidationException.class)
@@ -74,45 +78,53 @@ public class ApiExceptionHandler {
     ex.getParameterValidationResults().forEach(result ->
         result.getResolvableErrors().forEach(err -> {
           String message = messageSource.getMessage(err, LocaleContextHolder.getLocale());
-          fieldErrors.add(new ApiFieldError(result.getMethodParameter().getParameterName(), message));
+          fieldErrors.add(
+              new ApiFieldError(result.getMethodParameter().getParameterName(), message));
         })
     );
-    if (fieldErrors.isEmpty()) {
-      fieldErrors.add(new ApiFieldError("request", "入力値が不正です"));
-    }
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiErrorBody.badRequest(fieldErrors));
+    String globalMessage = messageSource.getMessage("api.error.bad_request", null,
+        LocaleContextHolder.getLocale());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body(ApiErrorBody.badRequest(globalMessage, fieldErrors));
   }
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<ApiErrorBody> handleNotReadable(HttpMessageNotReadableException ex) {
+    String globalMessage = messageSource.getMessage("api.error.bad_request", null,
+        LocaleContextHolder.getLocale());
     var cause = ex.getMostSpecificCause();
     String rootMsg = cause != null ? cause.getMessage() : ex.getMessage();
     String field = (rootMsg != null && rootMsg.toLowerCase().contains("status"))
         ? "status" : "requestBody";
     List<ApiFieldError> fieldErrors = List.of(
         new ApiFieldError(field, "JSONの形式が不正です、または想定外の値です"));
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiErrorBody.badRequest(fieldErrors));
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body(ApiErrorBody.badRequest(globalMessage, fieldErrors));
   }
 
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
   public ResponseEntity<ApiErrorBody> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+    String globalMessage = messageSource.getMessage("api.error.bad_request", null,
+        LocaleContextHolder.getLocale());
     String name = ex.getName() != null ? ex.getName() : "parameter";
-    log.debug("Type mismatch for field: {}, value: {}", name, ex.getValue());
     List<ApiFieldError> fieldErrors = List.of(
         new ApiFieldError(name, "入力値の型が正しくありません。"));
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiErrorBody.badRequest(fieldErrors));
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body(ApiErrorBody.badRequest(globalMessage, fieldErrors));
   }
 
   @ExceptionHandler({TaskNotFoundException.class, CategoryNotFoundException.class})
   public ResponseEntity<ApiErrorBody> handleNotFound(RuntimeException ex) {
     log.warn("404 Not Found (API): {}", ex.getMessage());
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiErrorBody.notFound());
+    String globalMessage = messageSource.getMessage("api.error.not_found", null,
+        LocaleContextHolder.getLocale());
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiErrorBody.notFound(globalMessage));
   }
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ApiErrorBody> handleAny(Exception ex) {
     log.error("500 Internal Server Error (API)", ex);
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .body(ApiErrorBody.internalServerError());
+        .body(ApiErrorBody.internalServerError("予期しないエラーが発生しました"));
   }
 }
