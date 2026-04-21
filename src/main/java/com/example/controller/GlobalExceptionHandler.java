@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.exception.CategoryNotFoundException;
 import com.example.exception.TaskNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -17,18 +18,10 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
  */
 @Slf4j
 @ControllerAdvice(basePackages = "com.example.controller")
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
   private final MessageSource messageSource;
-
-  /**
-   * コンストラクタ。
-   *
-   * @param messageSource メッセージソース
-   */
-  public GlobalExceptionHandler(MessageSource messageSource) {
-    this.messageSource = messageSource;
-  }
 
   @ExceptionHandler({TaskNotFoundException.class, CategoryNotFoundException.class})
   @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -37,7 +30,7 @@ public class GlobalExceptionHandler {
 
     model.addAttribute("errorTitle", "404 Not Found");
     model.addAttribute("errorMessage",
-        "指定されたリソースが見つかりませんでした。URLが正しいかご確認ください。");
+        messageSource.getMessage("ui.error.not_found", null, LocaleContextHolder.getLocale()));
 
     return "error/task-error";
   }
@@ -52,14 +45,17 @@ public class GlobalExceptionHandler {
 
     model.addAttribute("errorTitle", "400 Bad Request");
 
-    String detail;
+    String detailMessage;
     if (ex instanceof MethodArgumentTypeMismatchException) {
-      detail = "URLのパラメータ（IDなど）の型が正しくありません。";
+      detailMessage = messageSource.getMessage("ui.error.type_mismatch", null,
+          LocaleContextHolder.getLocale());
     } else {
-      detail = ex.getMessage();
+      detailMessage = ex.getMessage(); // IllegalArgumentException のメッセージはそのまま利用
     }
 
-    model.addAttribute("errorMessage", "不適切なリクエストです: " + detail);
+    model.addAttribute("errorMessage",
+        messageSource.getMessage("ui.error.bad_request", null, LocaleContextHolder.getLocale())
+            + ": " + detailMessage);
 
     return "error/task-error";
   }
@@ -71,7 +67,8 @@ public class GlobalExceptionHandler {
 
     model.addAttribute("errorTitle", "500 System Error");
     model.addAttribute("errorMessage",
-        "申し訳ございません。予期せぬエラーが発生しました。システム管理者に連絡してください。");
+        messageSource.getMessage("ui.error.internal_server_error", null,
+            LocaleContextHolder.getLocale()));
 
     return "error/task-error";
   }

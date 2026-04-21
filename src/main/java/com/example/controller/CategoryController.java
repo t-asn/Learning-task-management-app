@@ -34,7 +34,6 @@ public class CategoryController {
   @GetMapping
   public String list(Model model) {
     model.addAttribute("categories", categoryService.getAllCategories());
-    // 新規登録用の空オブジェクトを渡す
     if (!model.containsAttribute("category")) {
       model.addAttribute("category", new Category());
     }
