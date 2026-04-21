@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data JDBC を利用したカテゴリ用データアクセスインターフェース。
+ * Spring Data JDBC を利用したカテゴリ用データアクセスインターフェース（DAO）。
  */
 @Repository
 public interface CategoryDao extends CrudRepository<Category, Integer> {

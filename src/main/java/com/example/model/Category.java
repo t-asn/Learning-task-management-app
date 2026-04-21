@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+/**
+ * カテゴリを表すエンティティ。
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

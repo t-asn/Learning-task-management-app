@@ -5,6 +5,9 @@ package com.example.exception;
  */
 public class InvalidPageException extends RuntimeException {
 
+  /**
+   * @param message 例外メッセージ
+   */
   public InvalidPageException(String message) {
     super(message);
   }

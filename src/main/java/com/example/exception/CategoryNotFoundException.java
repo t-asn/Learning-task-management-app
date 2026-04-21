@@ -5,6 +5,9 @@ package com.example.exception;
  */
 public class CategoryNotFoundException extends RuntimeException {
 
+  /**
+   * @param message 例外メッセージ
+   */
   public CategoryNotFoundException(String message) {
     super(message);
   }

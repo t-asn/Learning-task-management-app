@@ -18,12 +18,18 @@ public class CategoryController {
 
   private final CategoryService categoryService;
 
+  /**
+   * @param categoryService カテゴリサービス
+   */
   public CategoryController(CategoryService categoryService) {
     this.categoryService = categoryService;
   }
 
   /**
    * カテゴリ一覧画面を表示します。
+   *
+   * @param model 画面表示用モデル
+   * @return 一覧画面のテンプレート名
    */
   @GetMapping
   public String list(Model model) {
@@ -33,6 +39,10 @@ public class CategoryController {
 
   /**
    * 指定されたカテゴリの詳細を表示します。
+   *
+   * @param id カテゴリID
+   * @param model 画面表示用モデル
+   * @return 詳細画面のテンプレート名
    */
   @GetMapping("/{id}")
   public String detail(@PathVariable Integer id, Model model) {

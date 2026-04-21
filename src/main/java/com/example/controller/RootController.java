@@ -11,6 +11,8 @@ public class RootController {
 
   /**
    * ルートURLにアクセスされた際、自動的にタスク一覧へリダイレクトします。
+   *
+   * @return タスク一覧へのリダイレクト
    */
   @GetMapping("/")
   public String root() {

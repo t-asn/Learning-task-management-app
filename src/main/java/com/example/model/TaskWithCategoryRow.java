@@ -3,7 +3,7 @@ package com.example.model;
 import java.time.LocalDate;
 
 /**
- * JOIN結果を受け取るDTO。
+ * タスクとカテゴリを JOIN した結果を受け取る DTO（読み取り専用）。
  */
 public record TaskWithCategoryRow(
     Integer id,

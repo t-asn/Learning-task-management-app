@@ -12,19 +12,24 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
- * カテゴリ管理のビジネスロジックを提供するサービスクラス。
+ * カテゴリに関するユースケース（一覧取得、単件取得など）を提供するサービス。
  */
 @Service
 public class CategoryService {
 
   private final CategoryDao categoryDao;
 
+  /**
+   * @param categoryDao カテゴリ用DAO
+   */
   public CategoryService(CategoryDao categoryDao) {
     this.categoryDao = categoryDao;
   }
 
   /**
    * 全てのカテゴリを取得します。
+   *
+   * @return カテゴリ一覧
    */
   @Transactional(readOnly = true)
   public List<Category> getAllCategories() {

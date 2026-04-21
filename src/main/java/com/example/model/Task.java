@@ -12,6 +12,9 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDate;
 
+/**
+ * タスクを表すエンティティ。
+ */
 @Data
 @Table("tasks")
 public class Task {

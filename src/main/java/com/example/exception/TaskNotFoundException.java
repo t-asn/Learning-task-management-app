@@ -5,6 +5,9 @@ package com.example.exception;
  */
 public class TaskNotFoundException extends RuntimeException {
 
+  /**
+   * @param message 例外メッセージ
+   */
   public TaskNotFoundException(String message) {
     super(message);
   }

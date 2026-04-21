@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * 学習タスク管理アプリケーションの起動クラス。
- * @SpringBootApplication により、コンポーネントスキャンや自動設定が有効化されます。
+ * {@link SpringBootApplication} により、コンポーネントスキャンや自動設定が有効化されます。
  */
 @SpringBootApplication
 public class LearningTaskManagementAppApplication {
