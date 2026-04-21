@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 /**
- * カテゴリを表すエンティティ。
+ * {@code categories} テーブル対応エンティティ。
  */
 @Data
 @NoArgsConstructor

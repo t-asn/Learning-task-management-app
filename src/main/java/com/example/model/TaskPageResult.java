@@ -3,7 +3,8 @@ package com.example.model;
 import java.util.List;
 
 /**
- * ページング結果（一覧と総件数）を保持するコンテナ。
+ * ページング用の一覧＋総件数。
  */
 public record TaskPageResult(List<TaskWithCategoryRow> tasks, long totalCount) {
+
 }

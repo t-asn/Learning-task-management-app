@@ -3,7 +3,7 @@ package com.example.model;
 import java.time.LocalDate;
 
 /**
- * タスクとカテゴリを JOIN した結果を受け取る DTO（読み取り専用）。
+ * タスク＋カテゴリ名の一覧行。
  */
 public record TaskWithCategoryRow(
     Integer id,
@@ -13,4 +13,5 @@ public record TaskWithCategoryRow(
     LocalDate dueDate,
     TaskStatus status
 ) {
+
 }

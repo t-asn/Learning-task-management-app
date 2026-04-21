@@ -13,7 +13,7 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.time.LocalDate;
 
 /**
- * タスクを表すエンティティ。
+ * {@code tasks} テーブル対応エンティティ。
  */
 @Data
 @Table("tasks")
