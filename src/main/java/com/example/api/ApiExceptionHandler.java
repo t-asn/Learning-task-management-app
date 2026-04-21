@@ -4,11 +4,10 @@ import com.example.api.dto.ApiErrorBody;
 import com.example.api.dto.ApiFieldError;
 import com.example.exception.CategoryNotFoundException;
 import com.example.exception.TaskNotFoundException;
-
 import jakarta.validation.ConstraintViolationException;
-
 import lombok.extern.slf4j.Slf4j;
-
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -23,6 +22,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * REST API 用の JSON エラーレスポンス。
@@ -32,12 +32,25 @@ import java.util.List;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ApiExceptionHandler {
 
+  private final MessageSource messageSource;
+
+  /**
+   * コンストラクタ。
+   *
+   * @param messageSource メッセージソース
+   */
+  public ApiExceptionHandler(MessageSource messageSource) {
+    this.messageSource = messageSource;
+  }
+
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ApiErrorBody> handleMethodArgumentNotValid(
       MethodArgumentNotValidException ex) {
     List<ApiFieldError> fieldErrors = new ArrayList<>();
     for (FieldError fe : ex.getBindingResult().getFieldErrors()) {
-      fieldErrors.add(new ApiFieldError(fe.getField(), fe.getDefaultMessage()));
+      // MessageSourceを使用してValidationMessages.propertiesからメッセージを取得
+      String message = messageSource.getMessage(fe, LocaleContextHolder.getLocale());
+      fieldErrors.add(new ApiFieldError(fe.getField(), message));
     }
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiErrorBody.badRequest(fieldErrors));
   }
@@ -59,10 +72,10 @@ public class ApiExceptionHandler {
       HandlerMethodValidationException ex) {
     List<ApiFieldError> fieldErrors = new ArrayList<>();
     ex.getParameterValidationResults().forEach(result ->
-        result.getResolvableErrors().forEach(err ->
-            fieldErrors.add(new ApiFieldError(result.getMethodParameter().getParameterName(),
-                err.getDefaultMessage()))
-        )
+        result.getResolvableErrors().forEach(err -> {
+          String message = messageSource.getMessage(err, LocaleContextHolder.getLocale());
+          fieldErrors.add(new ApiFieldError(result.getMethodParameter().getParameterName(), message));
+        })
     );
     if (fieldErrors.isEmpty()) {
       fieldErrors.add(new ApiFieldError("request", "入力値が不正です"));
@@ -84,8 +97,9 @@ public class ApiExceptionHandler {
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
   public ResponseEntity<ApiErrorBody> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
     String name = ex.getName() != null ? ex.getName() : "parameter";
+    log.debug("Type mismatch for field: {}, value: {}", name, ex.getValue());
     List<ApiFieldError> fieldErrors = List.of(
-        new ApiFieldError(name, "型が不正です"));
+        new ApiFieldError(name, "入力値の型が正しくありません。"));
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiErrorBody.badRequest(fieldErrors));
   }
 

@@ -31,4 +31,8 @@ public class CategoryService {
         .orElseThrow(
             () -> new CategoryNotFoundException("指定されたカテゴリは存在しません。ID: " + id));
   }
+
+  public List<Category> findAll() {
+    return null;
+  }
 }

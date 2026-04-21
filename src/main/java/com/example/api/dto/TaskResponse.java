@@ -6,7 +6,9 @@ import com.example.model.TaskWithCategoryRow;
 
 import java.time.LocalDate;
 
-/** タスク JSON 応答。 */
+/**
+ * タスクの REST API 用レスポンス DTO。
+ */
 public record TaskResponse(
     Integer id,
     String title,
@@ -16,6 +18,12 @@ public record TaskResponse(
     TaskStatus status
 ) {
 
+  /**
+   * TaskWithCategoryRow から TaskResponse を生成します。
+   *
+   * @param row データベースから取得したカテゴリ情報付きタスク行
+   * @return TaskResponse インスタンス
+   */
   public static TaskResponse fromRow(TaskWithCategoryRow row) {
     return new TaskResponse(
         row.id(),
@@ -23,9 +31,17 @@ public record TaskResponse(
         row.categoryId(),
         row.categoryName(),
         row.dueDate(),
-        row.status());
+        row.status() // TaskWithCategoryRow に status() メソッドがあることを前提とします
+    );
   }
 
+  /**
+   * Task エンティティとカテゴリ名から TaskResponse を生成します。
+   *
+   * @param task         タスクエンティティ
+   * @param categoryName カテゴリ名
+   * @return TaskResponse インスタンス
+   */
   public static TaskResponse fromTask(Task task, String categoryName) {
     return new TaskResponse(
         task.getId(),
@@ -33,6 +49,7 @@ public record TaskResponse(
         task.getCategoryId(),
         categoryName,
         task.getDueDate(),
-        task.getStatus());
+        task.getStatus()
+    );
   }
 }

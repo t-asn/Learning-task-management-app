@@ -1,19 +1,16 @@
 package com.example.model;
 
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
-import lombok.Data;
-
+import jakarta.validation.constraints.FutureOrPresent;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
-
 import java.time.LocalDate;
+import lombok.Data;
 
 /**
- * {@code tasks} テーブル対応エンティティ。
+ * タスクエンティティ。
  */
 @Data
 @Table("tasks")
@@ -22,16 +19,17 @@ public class Task {
   @Id
   private Integer id;
 
-  @NotBlank(message = "タイトルを入力してください")
-  @Size(max = 50, message = "タイトルは50文字以内で入力してください")
+  @NotBlank(message = "{task.title.notblank}")
+  @Size(max = 100, message = "{task.title.size}")
   private String title;
 
-  @NotNull(message = "カテゴリを選択してください")
-  private Integer categoryId;
-
-  @NotNull(message = "期限を入力してください")
-  @FutureOrPresent(message = "過去の日付は登録できません")
+  @NotNull(message = "{task.dueDate.notnull}")
+  @FutureOrPresent(message = "{task.dueDate.past}")
   private LocalDate dueDate;
 
-  private TaskStatus status = TaskStatus.TODO;
+  @NotNull(message = "{task.categoryId.notnull}")
+  private Integer categoryId;
+
+  // 初期値をセットすることで、新規登録時の「非NULL制約」違反を防ぎます
+  private TaskStatus status = TaskStatus.NOT_STARTED;
 }

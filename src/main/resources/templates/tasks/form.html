@@ -18,30 +18,34 @@
 
             <div class="mb-3">
               <label class="form-label fw-bold">カテゴリ</label>
-              <select class="form-select" th:errorclass="is-invalid" th:field="*{categoryId}">
+              <select class="form-select"
+                      th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid'"
+                      th:field="*{categoryId}">
                 <option value="">選択してください</option>
-                <option th:each="cat : ${categories}" th:text="${cat.name}"
-                        th:value="${cat.id}"></option>
+                <option th:each="cat : ${categories}" th:text="${cat.name}" th:value="${cat.id}"></option>
               </select>
-              <div class="invalid-feedback" th:errors="*{categoryId}"></div>
+              <div class="invalid-feedback" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></div>
             </div>
 
             <div class="mb-3">
               <label class="form-label fw-bold">タイトル</label>
               <input class="form-control" placeholder="例: Spring Bootの学習"
-                     th:errorclass="is-invalid" th:field="*{title}" type="text">
-              <div class="invalid-feedback" th:errors="*{title}"></div>
+                     th:classappend="${#fields.hasErrors('title')} ? 'is-invalid'"
+                     th:field="*{title}" type="text">
+              <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
             </div>
 
             <div class="mb-3">
               <label class="form-label fw-bold">期限</label>
-              <input class="form-control" th:errorclass="is-invalid" th:field="*{dueDate}"
-                     type="date">
-              <div class="invalid-feedback" th:errors="*{dueDate}"></div>
+              <input class="form-control"
+                     th:classappend="${#fields.hasErrors('dueDate')} ? 'is-invalid'"
+                     th:field="*{dueDate}" type="date">
+              <div class="invalid-feedback" th:if="${#fields.hasErrors('dueDate')}" th:errors="*{dueDate}"></div>
             </div>
 
             <div class="d-grid gap-2 mt-4">
-              <button class="btn btn-primary btn-lg shadow-sm fw-bold" th:text="${task.id == null} ? '登録する' : '更新する'"
+              <button class="btn btn-primary btn-lg shadow-sm fw-bold"
+                      th:text="${task.id == null} ? '登録する' : '更新する'"
                       type="submit"></button>
               <a class="btn btn-outline-secondary" th:href="@{/tasks}">キャンセルして一覧に戻る</a>
             </div>
@@ -51,5 +55,6 @@
     </div>
   </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

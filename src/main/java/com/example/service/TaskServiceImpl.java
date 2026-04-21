@@ -6,9 +6,7 @@ import com.example.model.Task;
 import com.example.model.TaskPageResult;
 import com.example.model.TaskStatus;
 import com.example.model.TaskWithCategoryRow;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,10 +40,22 @@ public class TaskServiceImpl implements TaskService {
   @Override
   @Transactional
   public void saveTask(Task task) {
+    // カテゴリの存在チェック
     categoryService.getCategoryById(task.getCategoryId());
-    if (task.getId() != null && !taskDao.existsById(task.getId())) {
-      throw new TaskNotFoundException("更新対象が見つかりません。ID: " + task.getId());
+
+    if (task.getId() == null) {
+      // 【新規登録時】ステータスが未設定ならデフォルト値をセットして非NULL制約違反を防ぐ
+      if (task.getStatus() == null) {
+        task.setStatus(TaskStatus.NOT_STARTED);
+      }
+    } else {
+      // 【更新時】存在確認
+      if (!taskDao.existsById(task.getId())) {
+        throw new TaskNotFoundException("更新対象が見つかりません。ID: " + task.getId());
+      }
     }
+
+    // @Idアノテーションを付けたTaskを渡すことで、正しくINSERT/UPDATEが実行されます
     taskDao.save(task);
   }
 
