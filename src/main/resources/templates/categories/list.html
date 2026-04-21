@@ -1,24 +1,97 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{layout/common :: head('カテゴリ一覧')}"></head>
-<body class="bg-light">
-<nav th:replace="~{layout/common :: navbar}"></nav>
+<head>
+  <meta charset="UTF-8">
+  <title>カテゴリ一覧 - Aero Ultimate</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+        rel="stylesheet">
+  <style>
+    html, body {
+      background: radial-gradient(circle at 80% 20%, rgba(0, 150, 255, 0.4) 0%, transparent 40%), radial-gradient(circle at 20% 80%, rgba(50, 255, 150, 0.3) 0%, transparent 50%), radial-gradient(circle at center, #1a4a8c 0%, transparent 70%), #0a1a33 !important;
+      background-attachment: fixed !important;
+      min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      color: #ffffff !important;
+      overflow-x: hidden;
+    }
 
-<div class="container pb-5">
+    @keyframes windowOpen {
+      0% {
+        transform: scale(0.8) translateZ(-500px) rotateX(15deg);
+        opacity: 0;
+        filter: blur(15px);
+      }
+      100% {
+        transform: scale(1) translateZ(0) rotateX(0);
+        opacity: 1;
+        filter: blur(0);
+      }
+    }
+
+    .aero-window {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(25px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+      margin-top: 3rem;
+      animation: windowOpen 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+    }
+
+    .aero-title-bar {
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%);
+      padding: 15px 25px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .list-group-item-aero {
+      background: rgba(255, 255, 255, 0.1) !important;
+      color: #fff !important;
+      transition: 0.2s;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .list-group-item-aero:hover {
+      background: rgba(255, 255, 255, 0.2) !important;
+      transform: translateX(10px);
+    }
+
+    .list-group-item-aero:active {
+      transform: scale(0.98);
+      background: rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .btn-aero-blue {
+      background: linear-gradient(to bottom, #f9fbfd 0%, #76b5e0 48%, #318cc7 49%, #84c5ef 100%);
+      border: 1px solid #3c7fb1;
+      color: #001d3d !important;
+      font-weight: 600;
+      padding: 5px 20px;
+      border-radius: 4px;
+      box-shadow: inset 0 1px 1px #fff;
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-dark" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);">
+  <div class="container"><a class="navbar-brand fw-bold" th:href="@{/tasks}">Task Manager</a></div>
+</nav>
+<div class="container">
   <div class="row justify-content-center">
-    <div class="col-md-8">
-      <h2 class="mb-4 fw-bold border-bottom pb-2">カテゴリマスタ一覧</h2>
-
-      <div class="list-group shadow-sm mb-4">
-        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3" th:each="cat : ${categories}"
-           th:href="@{/categories/{id}(id=${cat.id})}">
-          <span class="fw-bold fs-5" th:text="${cat.name}"></span>
-          <span class="badge bg-primary rounded-pill px-3 py-2">詳細を見る</span>
-        </a>
+    <div class="col-md-7">
+      <div class="aero-window">
+        <div class="aero-title-bar fw-bold fs-5"><i class="bi bi-tags me-2"></i>カテゴリ管理</div>
+        <div class="list-group list-group-flush">
+          <a class="list-group-item list-group-item-aero d-flex justify-content-between align-items-center py-4 px-4"
+             th:each="cat : ${categories}" th:href="@{/categories/{id}(id=${cat.id})}">
+            <span class="fs-5 fw-bold" th:text="${cat.name}"></span>
+            <span class="btn-aero-blue">詳細を確認</span>
+          </a>
+        </div>
       </div>
-
-      <div class="text-center">
-        <a class="btn btn-outline-secondary px-4" th:href="@{/tasks}">タスク一覧へ戻る</a>
+      <div class="text-center mt-5"><a class="btn btn-outline-light px-4" th:href="@{/tasks}">タスク一覧に戻る</a>
       </div>
     </div>
   </div>

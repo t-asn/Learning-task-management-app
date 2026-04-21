@@ -2,131 +2,173 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>タスク一覧 - Task Management App</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <title>タスク一覧 - Windows 7 Aero Ultimate</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+        rel="stylesheet">
   <style>
-    body { background-color: #f4f7f6; font-family: 'Helvetica Neue', Arial, sans-serif; }
-    .card { border: none; border-radius: 0.75rem; }
-    .overdue { color: #dc3545; font-weight: bold; }
-    .btn-group-sm .btn { font-size: 0.75rem; padding: 0.25rem 0.5rem; min-width: 60px; }
-    .badge-category { background-color: #e9ecef; color: #495057; border: 1px solid #dee2e6; font-weight: 400; }
+    html, body {
+      background: radial-gradient(circle at 80% 20%, rgba(0, 150, 255, 0.4) 0%, transparent 40%),
+      radial-gradient(circle at 20% 80%, rgba(50, 255, 150, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at center, #1a4a8c 0%, transparent 70%),
+      #0a1a33 !important;
+      background-attachment: fixed !important;
+      min-height: 100vh;
+      font-family: 'Segoe UI', 'Meiryo', sans-serif;
+      color: #ffffff !important;
+      overflow-x: hidden;
+    }
+
+    @keyframes windowOpen {
+      0% {
+        transform: scale(0.8) translateZ(-500px) rotateX(15deg);
+        opacity: 0;
+        filter: blur(15px);
+      }
+      100% {
+        transform: scale(1) translateZ(0) rotateX(0);
+        opacity: 1;
+        filter: blur(0);
+      }
+    }
+
+    .aero-window {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(25px) saturate(180%);
+      -webkit-backdrop-filter: blur(25px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-top: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 12px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+      margin-top: 2rem;
+      animation: windowOpen 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+      overflow: hidden;
+    }
+
+    .aero-title-bar {
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%);
+      padding: 15px 25px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .table-aero {
+      --bs-table-bg: rgba(255, 255, 255, 0.1) !important;
+      --bs-table-color: #ffffff !important;
+      color: #ffffff !important;
+      margin-bottom: 0;
+    }
+
+    .table-aero td, .table-aero th {
+      color: #ffffff !important;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .table-aero tbody tr:hover {
+      background: rgba(255, 255, 255, 0.2) !important;
+    }
+
+    /* 沈み込み & 光の反射エフェクト */
+    .btn-aero-blue {
+      background: linear-gradient(to bottom, #f9fbfd 0%, #76b5e0 48%, #318cc7 49%, #84c5ef 100%);
+      border: 1px solid #3c7fb1;
+      color: #001d3d !important;
+      font-weight: 600;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+
+    .btn-aero-blue::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.6), transparent);
+      transform: skewX(-25deg);
+      transition: 0.5s;
+    }
+
+    .btn-aero-blue:hover::after {
+      left: 150%;
+    }
+
+    .btn-aero-blue:active {
+      transform: translateY(2px) scale(0.96);
+      box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .btn-outline-light:active {
+      transform: translateY(2px) scale(0.95);
+    }
+
+    .active-status {
+      background: rgba(255, 255, 255, 0.3) !important;
+      border-color: #fff !important;
+    }
   </style>
 </head>
 <body>
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
-  <div class="container">
-    <a class="navbar-brand fw-bold" th:href="@{/tasks}">
-      <i class="bi bi-card-checklist me-2"></i>Task Manager
-    </a>
-  </div>
+<nav class="navbar navbar-dark" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);">
+  <div class="container"><a class="navbar-brand fw-bold" th:href="@{/tasks}"><i
+      class="bi bi-microsoft me-2"></i>Task Manager</a></div>
 </nav>
-
-<div class="container">
-  <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert" th:if="${message}">
-    <i class="bi bi-check-circle-fill me-2"></i>
-    <span th:text="${message}">メッセージ</span>
-    <button aria-label="閉じる" class="btn-close" data-bs-dismiss="alert" type="button"></button>
-  </div>
-
-  <div class="card shadow-sm">
-    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-      <h5 class="mb-0 text-dark fw-bold">タスク一覧</h5>
+<div class="container pb-5">
+  <div class="aero-window">
+    <div class="aero-title-bar d-flex justify-content-between align-items-center">
+      <h5 class="mb-0 fw-bold"><i class="bi bi-window-stack me-2"></i>タスク一覧</h5>
       <div class="btn-group">
-        <a class="btn btn-outline-secondary" th:href="@{/categories}">
-          <i class="bi bi-tags me-1"></i>カテゴリ管理
-        </a>
-        <a class="btn btn-primary shadow-sm" th:href="@{/tasks/new}">
-          <i class="bi bi-plus-lg me-1"></i>タスク新規登録
-        </a>
+        <a class="btn btn-outline-light btn-sm me-2" th:href="@{/categories}">カテゴリ管理</a>
+        <a class="btn btn-aero-blue btn-sm px-4" th:href="@{/tasks/new}">新規登録</a>
       </div>
     </div>
-
     <div class="table-responsive">
-      <table class="table table-hover align-middle mb-0">
-        <thead class="table-light">
+      <table class="table table-aero align-middle">
+        <thead>
         <tr>
-          <th class="ps-4" style="width: 8%;">ID</th>
-          <th style="width: 20%;">タイトル</th>
-          <th style="width: 12%;">カテゴリ</th>
-          <th style="width: 30%;">ステータス変更</th>
-          <th style="width: 15%;">期限</th>
-          <th class="text-center pe-4" style="width: 15%;">操作</th>
+          <th class="ps-4">ID</th>
+          <th>タイトル</th>
+          <th>カテゴリ</th>
+          <th>状態変更</th>
+          <th>期限</th>
+          <th class="text-center pe-4">操作</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="task : ${tasks}">
-          <td class="ps-4 text-muted" th:text="${task.id}">1</td>
-          <td><span class="fw-semibold text-dark" th:text="${task.title}">タイトル</span></td>
+          <td class="ps-4 text-white-50" th:text="${task.id}"></td>
+          <td class="fw-bold" th:text="${task.title}"></td>
+          <td><span class="badge border border-white border-opacity-50"
+                    th:text="${task.categoryName ?: '未分類'}"></span></td>
           <td>
-            <span class="badge badge-category" th:text="${task.categoryName ?: '未分類'}">カテゴリ</span>
-          </td>
-          <td>
-            <div class="btn-group btn-group-sm" role="group">
-              <a class="btn"
-                 th:classappend="${task.status.name() == 'NOT_STARTED'} ? 'btn-secondary disabled' : 'btn-outline-secondary'"
-                 th:href="${task.status.name() == 'NOT_STARTED'} ? '#' : @{/tasks/update-status(taskId=${task.id}, status='NOT_STARTED')}">未着手</a>
-
-              <a class="btn"
-                 th:classappend="${task.status.name() == 'DOING'} ? 'btn-info text-white disabled' : 'btn-outline-info'"
-                 th:href="${task.status.name() == 'DOING'} ? '#' : @{/tasks/update-status(taskId=${task.id}, status='DOING')}">着手</a>
-
-              <a class="btn"
-                 th:classappend="${task.status.name() == 'DONE'} ? 'btn-success disabled' : 'btn-outline-success'"
-                 th:href="${task.status.name() == 'DONE'} ? '#' : @{/tasks/update-status(taskId=${task.id}, status='DONE')}">完了</a>
+            <div class="btn-group btn-group-sm">
+              <a class="btn btn-outline-light"
+                 th:classappend="${task.status.name() == 'NOT_STARTED'} ? 'active-status'"
+                 th:href="@{/tasks/update-status(taskId=${task.id}, status='NOT_STARTED')}">未</a>
+              <a class="btn btn-outline-light"
+                 th:classappend="${task.status.name() == 'DOING'} ? 'active-status'"
+                 th:href="@{/tasks/update-status(taskId=${task.id}, status='DOING')}">中</a>
+              <a class="btn btn-outline-light"
+                 th:classappend="${task.status.name() == 'DONE'} ? 'active-status'"
+                 th:href="@{/tasks/update-status(taskId=${task.id}, status='DONE')}">済</a>
             </div>
           </td>
-          <td>
-            <span th:classappend="${task.dueDate.isBefore(T(java.time.LocalDate).now())} ? 'overdue' : ''">
-              <i class="bi bi-calendar3 me-1 small"></i>
-              <span th:text="${task.dueDate}">2026-04-17</span>
-            </span>
-          </td>
+          <td th:text="${task.dueDate}"></td>
           <td class="text-center pe-4">
-            <div class="btn-group">
-              <a class="btn btn-sm btn-outline-primary" th:href="@{/tasks/edit(taskId=${task.id})}" title="編集">
-                <i class="bi bi-pencil"></i>
-              </a>
-              <a class="btn btn-sm btn-outline-danger" onclick="return confirm('本当に削除しますか？');"
-                 th:href="@{/tasks/delete(taskId=${task.id})}" title="削除">
-                <i class="bi bi-trash"></i>
-              </a>
-            </div>
+            <a class="btn btn-sm btn-outline-light me-1"
+               th:href="@{/tasks/edit(taskId=${task.id})}"><i class="bi bi-pencil"></i></a>
+            <a class="btn btn-sm btn-outline-light" th:href="@{/tasks/delete(taskId=${task.id})}"><i
+                class="bi bi-trash"></i></a>
           </td>
         </tr>
         </tbody>
       </table>
     </div>
-
-    <div class="card-footer bg-white border-top-0 py-3">
-      <div class="row align-items-center">
-        <div class="col-sm-6 text-muted small">
-          全 <span th:text="${totalCount}">0</span> 件中
-          <span th:text="${startRange}">0</span> - <span th:text="${endRange}">0</span> 件を表示
-        </div>
-        <div class="col-sm-6">
-          <nav aria-label="Page navigation" th:if="${totalPages > 1}">
-            <ul class="pagination pagination-sm justify-content-end mb-0">
-              <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/tasks(page=${currentPage - 1})}">&laquo;</a>
-              </li>
-              <li class="page-item" th:classappend="${i == currentPage} ? 'active'"
-                  th:each="i : ${#numbers.sequence(1, totalPages)}">
-                <a class="page-link" th:href="@{/tasks(page=${i})}" th:text="${i}">1</a>
-              </li>
-              <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                <a class="page-link" th:href="@{/tasks(page=${currentPage + 1})}">&raquo;</a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </div>
-    </div>
   </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
