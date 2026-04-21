@@ -28,18 +28,21 @@
                 </option>
               </select>
               <div class="text-white-50 small mt-1">※カテゴリ一覧から追加・編集も可能です。</div>
+              <div class="text-danger" th:errors="*{categoryId}"></div>
             </div>
             <div class="mb-4">
               <label class="form-label small fw-bold text-white">
                 <i class="bi bi-file-text me-1"></i>タスク内容
               </label>
               <input class="form-control" placeholder="入力してください" th:field="*{title}" type="text">
+              <div class="text-danger" th:errors="*{title}"></div>
             </div>
             <div class="mb-5">
               <label class="form-label small fw-bold text-white">
                 <i class="bi bi-calendar me-1"></i>完了予定日
               </label>
               <input class="form-control" th:field="*{dueDate}" type="date">
+              <div class="text-danger" th:errors="*{dueDate}"></div>
             </div>
             <div class="d-grid gap-3">
               <button class="btn btn-aero-blue btn-lg" th:text="${task.id == null} ? '登録する' : '更新する'"
