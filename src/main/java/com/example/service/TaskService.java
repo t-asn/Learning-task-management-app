@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.model.Task;
 import com.example.model.TaskPageResult;
 import com.example.model.TaskStatus;
+import java.util.List;
 
 /**
  * タスクのユースケース。
@@ -18,4 +19,6 @@ public interface TaskService {
   void deleteTask(Integer id);
 
   void updateStatus(Integer taskId, TaskStatus newStatus);
+
+  List<Task> getTasksByCategoryId(Integer categoryId);
 }

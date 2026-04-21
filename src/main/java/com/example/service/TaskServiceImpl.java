@@ -12,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * タスク管理のビジネスロジックを実装するクラス。
+ */
 @Service
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
@@ -29,6 +32,40 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
+  @Transactional(readOnly = true)
+  public Task getTaskById(Integer id) {
+    return taskDao.findById(id)
+        .orElseThrow(() -> new TaskNotFoundException("ID:" + id + "は見つかりません"));
+  }
+
+  /**
+   * 【追加パーツ】カテゴリIDに紐づくタスク一覧を取得します。
+   * カテゴリ詳細画面で使用されます。
+   */
+  @Override
+  @Transactional(readOnly = true)
+  public List<Task> getTasksByCategoryId(Integer categoryId) {
+    return taskDao.findByCategoryId(categoryId);
+  }
+
+  @Override
+  @Transactional
+  public void saveTask(Task task) {
+    categoryService.getCategoryById(task.getCategoryId());
+
+    if (task.getId() == null) {
+      if (task.getStatus() == null) {
+        task.setStatus(TaskStatus.NOT_STARTED);
+      }
+    } else {
+      if (!taskDao.existsById(task.getId())) {
+        throw new TaskNotFoundException("更新対象が見つかりません。ID: " + task.getId());
+      }
+    }
+    taskDao.save(task);
+  }
+
+  @Override
   @Transactional
   public void updateStatus(Integer taskId, TaskStatus newStatus) {
     Task task = taskDao.findByIdForUpdate(taskId)
@@ -39,39 +76,10 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   @Transactional
-  public void saveTask(Task task) {
-    // カテゴリの存在チェック
-    categoryService.getCategoryById(task.getCategoryId());
-
-    if (task.getId() == null) {
-      // 【新規登録時】ステータスが未設定ならデフォルト値をセットして非NULL制約違反を防ぐ
-      if (task.getStatus() == null) {
-        task.setStatus(TaskStatus.NOT_STARTED);
-      }
-    } else {
-      // 【更新時】存在確認
-      if (!taskDao.existsById(task.getId())) {
-        throw new TaskNotFoundException("更新対象が見つかりません。ID: " + task.getId());
-      }
-    }
-
-    // @Idアノテーションを付けたTaskを渡すことで、正しくINSERT/UPDATEが実行されます
-    taskDao.save(task);
-  }
-
-  @Override
-  @Transactional
   public void deleteTask(Integer id) {
     if (!taskDao.existsById(id)) {
       throw new TaskNotFoundException("削除対象が見つかりません。ID: " + id);
     }
     taskDao.deleteById(id);
-  }
-
-  @Override
-  @Transactional(readOnly = true)
-  public Task getTaskById(Integer id) {
-    return taskDao.findById(id)
-        .orElseThrow(() -> new TaskNotFoundException("ID:" + id + "は見つかりません"));
   }
 }

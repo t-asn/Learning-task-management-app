@@ -1,31 +1,89 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{layout/common :: head('カテゴリ詳細')}"></head>
-<body class="bg-light">
-<nav th:replace="~{layout/common :: navbar}"></nav>
+<head>
+  <meta charset="UTF-8">
+  <title>カテゴリ詳細 - Task Manager</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body { background-color: #f4f7f6; font-family: 'Helvetica Neue', Arial, sans-serif; }
+    .card { border: none; border-radius: 0.75rem; }
+  </style>
+</head>
+<body>
 
-<div class="container pb-5">
-  <h2 class="mb-4 fw-bold">カテゴリ詳細: <span class="text-primary"
-                                               th:text="${category.name}"></span></h2>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" th:href="@{/tasks}">Task Manager</a>
+  </div>
+</nav>
 
-  <div class="card shadow-sm border-0 bg-white">
-    <div class="card-header bg-dark text-white fw-bold py-3">
-      カテゴリ情報
+<div class="container">
+  <div th:if="${errorMessage}" class="alert alert-danger shadow-sm" th:text="${errorMessage}">エラーメッセージ</div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-dark text-white py-3">
+          <i class="bi bi-pencil-square me-2"></i>カテゴリ編集
+        </div>
+        <div class="card-body">
+          <form th:action="@{/categories/{id}/update(id=${category.id})}" th:object="${category}" method="post">
+            <div class="mb-3">
+              <label class="form-label small text-muted">カテゴリID</label>
+              <input type="text" class="form-control bg-light" th:field="*{id}" readonly>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">カテゴリ名</label>
+              <input type="text" class="form-control" th:field="*{name}" th:errorclass="is-invalid">
+              <div class="invalid-feedback" th:errors="*{name}">エラーメッセージ</div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 shadow-sm">
+              <i class="bi bi-save me-1"></i>名称を変更する
+            </button>
+          </form>
+          <hr>
+          <a th:href="@{/categories/{id}/delete(id=${category.id})}"
+             class="btn btn-outline-danger btn-sm w-100"
+             onclick="return confirm('本当に削除しますか？紐づくタスクがある場合はエラーになります。');">
+            <i class="bi bi-trash me-1"></i>カテゴリを削除
+          </a>
+        </div>
+      </div>
     </div>
-    <div class="card-body p-4">
-      <p>カテゴリID: <span th:text="${category.id}"></span></p>
-      <p>カテゴリ名: <span th:text="${category.name}"></span></p>
 
-      <div class="alert alert-info">
-        現在、このカテゴリに紐づくタスク一覧の表示機能はメンテナンス中です。
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+          <h6 class="mb-0 fw-bold text-dark">「<span th:text="${category.name}"></span>」のタスク一覧</h6>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+            <tr>
+              <th style="width: 50%;">タイトル</th>
+              <th style="width: 25%;">期限</th>
+              <th style="width: 25%;">ステータス</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="task : ${tasks}">
+              <td><span class="fw-semibold" th:text="${task.title}"></span></td>
+              <td th:text="${task.dueDate}"></td>
+              <td>
+                  <span class="badge"
+                        th:classappend="${task.status.name() == 'DONE'} ? 'bg-success' : (${task.status.name() == 'DOING'} ? 'bg-info' : 'bg-secondary')"
+                        th:text="${task.status.displayName}">ステータス</span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
-
-  <div class="mt-4">
-    <a class="btn btn-outline-secondary px-4 me-2" th:href="@{/categories}">カテゴリ一覧へ戻る</a>
-    <a class="btn btn-primary px-4" th:href="@{/tasks}">タスク一覧へ戻る</a>
-  </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

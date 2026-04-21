@@ -28,4 +28,7 @@ public interface TaskDao extends CrudRepository<Task, Integer> {
 
   @Query("SELECT COUNT(*) FROM tasks")
   long countAll();
+
+  @Query("SELECT * FROM tasks WHERE category_id = :categoryId ORDER BY due_date ASC")
+  List<Task> findByCategoryId(Integer categoryId);
 }
