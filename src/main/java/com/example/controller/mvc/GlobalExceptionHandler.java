@@ -1,5 +1,6 @@
 package com.example.controller.mvc;
 
+import com.example.exception.ApiExceptionHandler;
 import com.example.exception.CategoryNotFoundException;
 import com.example.exception.TaskNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
- * Thymeleaf 用の共通例外ハンドラ（JSON API は {@link com.example.controller.api.ApiExceptionHandler}）。
+ * Thymeleaf 用の共通例外ハンドラ（JSON API は {@link ApiExceptionHandler}）。
  */
 @Slf4j
 @ControllerAdvice(basePackages = "com.example.controller.mvc")

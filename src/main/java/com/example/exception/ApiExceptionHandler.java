@@ -1,4 +1,4 @@
-package com.example.controller.api;
+package com.example.exception;
 
 import com.example.controller.api.dto.ApiErrorBody;
 import com.example.controller.api.dto.ApiFieldError;
