@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
     model.addAttribute("errorMessage",
         messageSource.getMessage("ui.error.not_found", null, LocaleContextHolder.getLocale()));
 
-    return "error/task-error";
+    return "error"; // error/error から変更
   }
 
   @ExceptionHandler({
@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
         messageSource.getMessage("ui.error.bad_request", null, LocaleContextHolder.getLocale())
             + ": " + detailMessage);
 
-    return "error/task-error";
+    return "error"; // error/error から変更
   }
 
   @ExceptionHandler(Exception.class)
@@ -71,6 +71,6 @@ public class GlobalExceptionHandler {
         messageSource.getMessage("ui.error.internal_server_error", null,
             LocaleContextHolder.getLocale()));
 
-    return "error/task-error";
+    return "error"; // error/error から変更
   }
 }

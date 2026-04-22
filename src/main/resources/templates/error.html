@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/common :: head('エラー')}"></head>
+<body>
+<nav th:replace="~{layout/common :: navbar}"></nav>
+
+<div class="container d-flex flex-grow-1 align-items-center justify-content-center" style="min-height: 70vh;">
+  <div class="aero-window p-5 text-center" style="max-width: 600px;">
+    <div class="mb-4">
+      <i class="bi bi-exclamation-triangle-fill display-1 text-warning"></i>
+    </div>
+    <!-- カスタム例外ハンドラからの errorTitle、またはデフォルトの status -->
+    <h1 class="display-3 fw-bold text-danger mb-3" th:text="${errorTitle != null ? errorTitle : (status != null ? status : 'Error')}">Error</h1>
+    <h3 class="h4 fw-bold mb-4">リクエストを処理できませんでした</h3>
+    <!-- カスタム例外ハンドラからの errorMessage、またはデフォルトの message -->
+    <p class="text-white fs-5 mb-5" th:text="${errorMessage != null ? errorMessage : (message != null ? message : '予期せぬエラーが発生しました。')}"></p>
+
+    <div class="d-flex justify-content-center gap-3">
+      <a class="btn btn-aero-blue btn-lg px-4" th:href="@{/tasks}">
+        <i class="bi bi-house me-2"></i>タスク一覧へ戻る
+      </a>
+      <a class="btn btn-outline-light btn-lg px-4" href="javascript:history.back()">
+        <i class="bi bi-arrow-left me-2"></i>戻る
+      </a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

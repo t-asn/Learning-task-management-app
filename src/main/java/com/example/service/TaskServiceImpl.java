@@ -54,7 +54,7 @@ public class TaskServiceImpl implements TaskService {
 
     if (task.getId() == null) {
       if (task.getStatus() == null) {
-        task.setStatus(TaskStatus.NOT_STARTED);
+        task.setStatus(TaskStatus.TODO);
       }
     } else {
       if (!taskDao.existsById(task.getId())) {
