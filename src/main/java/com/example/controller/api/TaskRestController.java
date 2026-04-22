@@ -4,6 +4,8 @@ import com.example.controller.api.dto.TaskPageResponse;
 import com.example.controller.api.dto.TaskRequest;
 import com.example.controller.api.dto.TaskResponse;
 import com.example.model.Task;
+import com.example.model.TaskWithCategoryRow;
+import com.example.service.CategoryService;
 import com.example.service.TaskService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * タスク REST API（JSON）。
@@ -24,20 +28,26 @@ import java.net.URI;
 public class TaskRestController {
 
   private final TaskService taskService;
-  private final TaskApiMapper mapper;
+  private final CategoryService categoryService; // CategoryService を追加
 
   @GetMapping
   public TaskPageResponse list(
       @RequestParam(defaultValue = "1") @Min(1) int page,
       @RequestParam(defaultValue = "5") @Min(1) int size) {
     var result = taskService.getTasksByPage(page, size);
-    return mapper.toPageResponse(result, page, size);
+
+    List<TaskResponse> tasks = result.tasks().stream()
+        .map(TaskResponse::fromRow) // TaskWithCategoryRow から直接変換
+        .collect(Collectors.toList());
+
+    return new TaskPageResponse(tasks, result.totalCount(), page, size);
   }
 
   @GetMapping("/{id}")
   public TaskResponse get(@PathVariable Integer id) {
     Task task = taskService.getTaskById(id);
-    return mapper.toResponse(task);
+    var category = categoryService.getCategoryById(task.getCategoryId());
+    return TaskResponse.fromTask(task, category.getName());
   }
 
   @PostMapping
@@ -45,7 +55,8 @@ public class TaskRestController {
     Task task = request.toModel(null);
     taskService.saveTask(task);
 
-    TaskResponse body = mapper.toResponse(task);
+    var category = categoryService.getCategoryById(task.getCategoryId());
+    TaskResponse body = TaskResponse.fromTask(task, category.getName());
     URI location = ServletUriComponentsBuilder.fromCurrentRequest()
         .path("/{id}")
         .buildAndExpand(task.getId())
@@ -57,7 +68,8 @@ public class TaskRestController {
   public TaskResponse update(@PathVariable Integer id, @Valid @RequestBody TaskRequest request) {
     Task task = request.toModel(id);
     taskService.saveTask(task);
-    return mapper.toResponse(task);
+    var category = categoryService.getCategoryById(task.getCategoryId());
+    return TaskResponse.fromTask(task, category.getName());
   }
 
   @DeleteMapping("/{id}")
