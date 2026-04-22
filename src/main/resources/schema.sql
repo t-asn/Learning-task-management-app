@@ -13,6 +13,6 @@ CREATE TABLE IF NOT EXISTS tasks
     title       VARCHAR(100) NOT NULL,
     category_id INTEGER      NOT NULL REFERENCES categories (id),
     due_date    DATE         NOT NULL,
-    status      VARCHAR(20)  NOT NULL DEFAULT 'NOT_STARTED',
-    CONSTRAINT chk_status CHECK (status IN ('NOT_STARTED', 'DOING', 'DONE'))
+    status      VARCHAR(20)  NOT NULL DEFAULT 'TODO',
+    CONSTRAINT chk_status CHECK (status IN ('TODO', 'DOING', 'DONE'))
 );

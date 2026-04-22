@@ -4,7 +4,6 @@ import com.example.controller.api.dto.TaskPageResponse;
 import com.example.controller.api.dto.TaskRequest;
 import com.example.controller.api.dto.TaskResponse;
 import com.example.model.Task;
-import com.example.model.TaskWithCategoryRow;
 import com.example.service.CategoryService;
 import com.example.service.TaskService;
 import jakarta.validation.Valid;
@@ -28,7 +27,7 @@ import java.util.stream.Collectors;
 public class TaskRestController {
 
   private final TaskService taskService;
-  private final CategoryService categoryService; // CategoryService を追加
+  private final CategoryService categoryService;
 
   @GetMapping
   public TaskPageResponse list(
@@ -37,7 +36,7 @@ public class TaskRestController {
     var result = taskService.getTasksByPage(page, size);
 
     List<TaskResponse> tasks = result.tasks().stream()
-        .map(TaskResponse::fromRow) // TaskWithCategoryRow から直接変換
+        .map(TaskResponse::fromRow)
         .collect(Collectors.toList());
 
     return new TaskPageResponse(tasks, result.totalCount(), page, size);
@@ -52,7 +51,7 @@ public class TaskRestController {
 
   @PostMapping
   public ResponseEntity<TaskResponse> create(@Valid @RequestBody TaskRequest request) {
-    Task task = request.toModel(null);
+    Task task = request.toModelForCreate();
     taskService.saveTask(task);
 
     var category = categoryService.getCategoryById(task.getCategoryId());
@@ -66,7 +65,7 @@ public class TaskRestController {
 
   @PutMapping("/{id}")
   public TaskResponse update(@PathVariable Integer id, @Valid @RequestBody TaskRequest request) {
-    Task task = request.toModel(id);
+    Task task = request.toModelForUpdate(id);
     taskService.saveTask(task);
     var category = categoryService.getCategoryById(task.getCategoryId());
     return TaskResponse.fromTask(task, category.getName());

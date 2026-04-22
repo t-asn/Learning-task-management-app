@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
       detailMessage = messageSource.getMessage("ui.error.type_mismatch", null,
           LocaleContextHolder.getLocale());
     } else {
-      detailMessage = ex.getMessage(); // IllegalArgumentException のメッセージはそのまま利用
+      detailMessage = ex.getMessage();
     }
 
     model.addAttribute("errorMessage",

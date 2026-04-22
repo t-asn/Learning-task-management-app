@@ -30,12 +30,28 @@ public record TaskRequest(
 ) {
 
   /**
-   * TaskRequest から Task モデルへ変換します。
+   * 新規作成用の Task モデルへ変換します。
    *
-   * @param id タスクID（新規登録時は null）
    * @return Task モデル
    */
-  public Task toModel(Integer id) {
+  public Task toModelForCreate() {
+    return toModel(null);
+  }
+
+  /**
+   * 更新用の Task モデルへ変換します。
+   *
+   * @param id タスクID
+   * @return Task モデル
+   */
+  public Task toModelForUpdate(Integer id) {
+    return toModel(id);
+  }
+
+  /**
+   * TaskRequest から Task モデルへ変換します（内部用）。
+   */
+  private Task toModel(Integer id) {
     Task t = new Task();
     t.setId(id);
     t.setTitle(this.title());

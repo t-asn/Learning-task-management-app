@@ -31,5 +31,5 @@ public class Task {
   private Integer categoryId;
 
   // 初期値をセットすることで、新規登録時の「非NULL制約」違反を防ぎます
-  private TaskStatus status = TaskStatus.NOT_STARTED;
+  private TaskStatus status = TaskStatus.TODO;
 }
