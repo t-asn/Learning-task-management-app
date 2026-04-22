@@ -28,10 +28,10 @@
         <thead>
         <tr>
           <th class="ps-4">ID</th>
-          <th th:text="'タイトル'">タイトル</th>
-          <th th:text="'カテゴリ'">カテゴリ</th>
-          <th th:text="'状態変更'">状態変更</th>
-          <th th:text="'期限'">期限</th>
+          <th>タイトル</th>
+          <th>カテゴリ</th>
+          <th>状態変更</th>
+          <th>期限</th>
           <th class="text-center pe-4">操作</th>
         </tr>
         </thead>
@@ -67,7 +67,6 @@
     </div>
   </div>
 
-  <!-- ページネーション -->
   <nav aria-label="Page navigation" class="mt-4" th:if="${totalPages > 1}">
     <ul class="pagination justify-content-center">
       <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
