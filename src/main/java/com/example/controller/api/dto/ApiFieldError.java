@@ -1,4 +1,4 @@
-package com.example.api.dto;
+package com.example.controller.api.dto;
 
 /**
  * {@code fieldErrors} の 1 要素。

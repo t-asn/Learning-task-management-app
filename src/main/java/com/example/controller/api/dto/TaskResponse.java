@@ -1,4 +1,4 @@
-package com.example.api.dto;
+package com.example.controller.api.dto;
 
 import com.example.model.Task;
 import com.example.model.TaskStatus;

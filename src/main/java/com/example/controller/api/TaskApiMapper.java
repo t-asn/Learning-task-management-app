@@ -1,8 +1,8 @@
-package com.example.api;
+package com.example.controller.api;
 
-import com.example.api.dto.TaskPageResponse;
-import com.example.api.dto.TaskRequest;
-import com.example.api.dto.TaskResponse;
+import com.example.controller.api.dto.TaskPageResponse;
+import com.example.controller.api.dto.TaskRequest;
+import com.example.controller.api.dto.TaskResponse;
 import com.example.model.Task;
 import com.example.model.TaskPageResult;
 import com.example.service.CategoryService;

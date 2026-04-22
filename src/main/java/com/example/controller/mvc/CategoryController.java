@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.example.controller.mvc;
 
 import com.example.model.Category;
 import com.example.model.Task;

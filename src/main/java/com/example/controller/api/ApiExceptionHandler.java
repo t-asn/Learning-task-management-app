@@ -1,7 +1,7 @@
-package com.example.api;
+package com.example.controller.api;
 
-import com.example.api.dto.ApiErrorBody;
-import com.example.api.dto.ApiFieldError;
+import com.example.controller.api.dto.ApiErrorBody;
+import com.example.controller.api.dto.ApiFieldError;
 import com.example.exception.CategoryNotFoundException;
 import com.example.exception.TaskNotFoundException;
 import jakarta.validation.ConstraintViolationException;
@@ -24,7 +24,7 @@ import java.util.List;
  * REST API 用の例外ハンドラ。
  */
 @Slf4j
-@RestControllerAdvice(basePackages = "com.example.api")
+@RestControllerAdvice(basePackages = "com.example.controller.api")
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RequiredArgsConstructor
 public class ApiExceptionHandler {

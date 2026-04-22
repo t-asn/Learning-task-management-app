@@ -1,7 +1,7 @@
-package com.example.api;
+package com.example.controller.api;
 
-import com.example.api.dto.ApiErrorBody;
-import com.example.api.dto.ApiFieldError;
+import com.example.controller.api.dto.ApiErrorBody;
+import com.example.controller.api.dto.ApiFieldError;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
