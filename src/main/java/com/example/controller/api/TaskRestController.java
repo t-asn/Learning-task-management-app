@@ -42,7 +42,7 @@ public class TaskRestController {
 
   @PostMapping
   public ResponseEntity<TaskResponse> create(@Valid @RequestBody TaskRequest request) {
-    Task task = mapper.toModel(null, request);
+    Task task = request.toModel(null);
     taskService.saveTask(task);
 
     TaskResponse body = mapper.toResponse(task);
@@ -55,7 +55,7 @@ public class TaskRestController {
 
   @PutMapping("/{id}")
   public TaskResponse update(@PathVariable Integer id, @Valid @RequestBody TaskRequest request) {
-    Task task = mapper.toModel(id, request);
+    Task task = request.toModel(id);
     taskService.saveTask(task);
     return mapper.toResponse(task);
   }

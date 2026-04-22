@@ -1,7 +1,6 @@
 package com.example.controller.api;
 
 import com.example.controller.api.dto.TaskPageResponse;
-import com.example.controller.api.dto.TaskRequest;
 import com.example.controller.api.dto.TaskResponse;
 import com.example.model.Task;
 import com.example.model.TaskPageResult;
@@ -19,19 +18,6 @@ import java.util.List;
 public class TaskApiMapper {
 
   private final CategoryService categoryService;
-
-  /**
-   * TaskRequest から Task モデルへ変換します。
-   */
-  public Task toModel(Integer id, TaskRequest request) {
-    Task t = new Task();
-    t.setId(id);
-    t.setTitle(request.title());
-    t.setCategoryId(request.categoryId());
-    t.setDueDate(request.dueDate());
-    t.setStatus(request.status());
-    return t;
-  }
 
   /**
    * Task モデルから TaskResponse DTO へ変換します。

@@ -1,5 +1,6 @@
 package com.example.controller.api.dto;
 
+import com.example.model.Task;
 import com.example.model.TaskStatus;
 
 import jakarta.validation.constraints.FutureOrPresent;
@@ -28,4 +29,19 @@ public record TaskRequest(
     TaskStatus status
 ) {
 
+  /**
+   * TaskRequest から Task モデルへ変換します。
+   *
+   * @param id タスクID（新規登録時は null）
+   * @return Task モデル
+   */
+  public Task toModel(Integer id) {
+    Task t = new Task();
+    t.setId(id);
+    t.setTitle(this.title());
+    t.setCategoryId(this.categoryId());
+    t.setDueDate(this.dueDate());
+    t.setStatus(this.status());
+    return t;
+  }
 }
