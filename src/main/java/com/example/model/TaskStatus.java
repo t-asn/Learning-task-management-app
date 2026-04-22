@@ -4,13 +4,13 @@ import lombok.Getter;
 
 @Getter
 public enum TaskStatus {
-  TODO, DOING, DONE;
+  TODO("TODO"),
+  DOING("着手"),
+  DONE("完了");
 
-  public static TaskStatus of(String statusName) {
-    try {
-      return TaskStatus.valueOf(statusName.toUpperCase());
-    } catch (IllegalArgumentException | NullPointerException e) {
-      throw new IllegalArgumentException("不正なステータスです：" + statusName);
-    }
+  private final String displayName;
+
+  TaskStatus(String displayName) {
+    this.displayName = displayName;
   }
 }

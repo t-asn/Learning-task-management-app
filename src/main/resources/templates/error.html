@@ -9,9 +9,11 @@
     <div class="mb-4">
       <i class="bi bi-exclamation-triangle-fill display-1 text-warning"></i>
     </div>
-    <h1 class="display-3 fw-bold text-danger mb-3" th:text="${errorTitle}">Error</h1>
+    <!-- カスタム例外ハンドラからの errorTitle、またはデフォルトの status -->
+    <h1 class="display-3 fw-bold text-danger mb-3" th:text="${errorTitle != null ? errorTitle : (status != null ? status : 'Error')}">Error</h1>
     <h3 class="h4 fw-bold mb-4">リクエストを処理できませんでした</h3>
-    <p class="text-white fs-5 mb-5" th:text="${errorMessage}"></p>
+    <!-- カスタム例外ハンドラからの errorMessage、またはデフォルトの message -->
+    <p class="text-white fs-5 mb-5" th:text="${errorMessage != null ? errorMessage : (message != null ? message : '予期せぬエラーが発生しました。')}"></p>
 
     <div class="d-flex justify-content-center gap-3">
       <a class="btn btn-aero-blue btn-lg px-4" th:href="@{/tasks}">

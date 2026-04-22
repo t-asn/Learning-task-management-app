@@ -1,7 +1,7 @@
 package com.example.exception;
 
 /**
- * 指定されたタスクがデータベースに存在しない場合にスローされる例外。
+ * タスクが存在しないとき。
  */
 public class TaskNotFoundException extends RuntimeException {
 

@@ -1,7 +1,7 @@
 package com.example.exception;
 
 /**
- * 指定されたカテゴリがデータベースに存在しない場合にスローされる例外。
+ * カテゴリが存在しないとき。
  */
 public class CategoryNotFoundException extends RuntimeException {
 

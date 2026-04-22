@@ -1,31 +1,92 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/common :: head('カテゴリ詳細')}"></head>
-<body class="bg-light">
+<body>
 <nav th:replace="~{layout/common :: navbar}"></nav>
 
 <div class="container pb-5">
-  <h2 class="mb-4 fw-bold">カテゴリ詳細: <span class="text-primary"
-                                               th:text="${category.name}"></span></h2>
-
-  <div class="card shadow-sm border-0 bg-white">
-    <div class="card-header bg-dark text-white fw-bold py-3">
-      カテゴリ情報
+  <div class="row g-4 mt-4">
+    <div class="col-md-4">
+      <div class="aero-window h-100">
+        <div class="aero-title-bar fw-bold">
+          <i class="bi bi-pencil-square me-2"></i>名称の編集
+        </div>
+        <div class="card-body p-4">
+          <form method="post" th:action="@{/categories/{id}/update(id=${category.id})}"
+                th:object="${category}">
+            <div class="mb-4">
+              <label class="form-label small fw-bold text-white">
+                <i class="bi bi-hash me-1"></i>ID:
+              </label>
+              <input class="form-control" readonly th:field="*{id}" type="text">
+            </div>
+            <div class="mb-4">
+              <label class="form-label small fw-bold text-white">
+                <i class="bi bi-textbox me-1"></i>名称:
+              </label>
+              <input class="form-control" th:field="*{name}" type="text">
+            </div>
+            <button class="btn btn-aero-blue w-100 py-2 mb-3" type="submit">
+              <i class="bi bi-check-circle me-1"></i>変更を保存
+            </button>
+          </form>
+          <hr class="border-white opacity-25">
+          <a class="btn btn-outline-light w-100 btn-sm"
+             onclick="return confirm('本当に削除しますか？');"
+             th:href="@{/categories/{id}/delete(id=${category.id})}">
+            <i class="bi bi-trash me-1"></i>このカテゴリを抹消
+          </a>
+        </div>
+      </div>
     </div>
-    <div class="card-body p-4">
-      <p>カテゴリID: <span th:text="${category.id}"></span></p>
-      <p>カテゴリ名: <span th:text="${category.name}"></span></p>
-
-      <div class="alert alert-info">
-        現在、このカテゴリに紐づくタスク一覧の表示機能はメンテナンス中です。
+    <div class="col-md-8">
+      <div class="aero-window h-100">
+        <div class="aero-title-bar fw-bold">
+          <i class="bi bi-list-check me-2"></i>「<span th:text="${category.name}"></span>」に紐づくタスク
+        </div>
+        <div class="table-responsive">
+          <table class="table table-aero align-middle mb-0">
+            <thead>
+            <tr>
+              <th class="ps-4">
+                <i class="bi bi-file-text me-2"></i>タイトル
+              </th>
+              <th>
+                <i class="bi bi-calendar me-2"></i>期限
+              </th>
+              <th class="pe-4 text-center">
+                <i class="bi bi-flag me-2"></i>状態
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(tasks)}">
+              <td class="text-center text-white-50 py-4" colspan="3">
+                このカテゴリに紐付くタスクはありません
+              </td>
+            </tr>
+            <tr th:each="task : ${tasks}">
+              <td class="ps-4 fw-bold" th:text="${task.title}"></td>
+              <td th:text="${task.dueDate}"></td>
+              <td class="pe-4 text-center">
+                <span class="badge border border-white border-opacity-50"
+                      th:text="${task.status.displayName}"></span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
-
-  <div class="mt-4">
-    <a class="btn btn-outline-secondary px-4 me-2" th:href="@{/categories}">カテゴリ一覧へ戻る</a>
-    <a class="btn btn-primary px-4" th:href="@{/tasks}">タスク一覧へ戻る</a>
+  <div class="text-center mt-4">
+    <a class="btn btn-outline-light px-4" th:href="@{/categories}">
+      <i class="bi bi-arrow-left me-2"></i>カテゴリ一覧に戻る
+    </a>
   </div>
+</div>
+</body>
+</html>
 </div>
 </body>
 </html>

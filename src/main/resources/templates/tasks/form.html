@@ -1,49 +1,53 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{layout/common :: head(${task.id == null} ? '新規登録' : 'タスク編集')}"></head>
-<body class="bg-light">
+<head th:replace="~{layout/common :: head('タスク管理')}"></head>
+<body>
 <nav th:replace="~{layout/common :: navbar}"></nav>
 
 <div class="container pb-5">
   <div class="row justify-content-center">
-    <div class="col-md-6 col-lg-5">
-      <div class="card shadow-sm border-0">
-        <div class="card-header bg-primary text-white py-3">
-          <h3 class="card-title h5 mb-0 fw-bold"
-              th:text="${task.id == null} ? '＋ 新規タスク登録' : '✎ タスク編集'"></h3>
+    <div class="col-md-5">
+      <div class="aero-window">
+        <div class="aero-title-bar fw-bold fs-5">
+          <i class="bi me-2" th:class="${task.id == null} ? 'bi-plus-circle' : 'bi-pencil-square'"></i>
+          <span th:text="${task.id == null} ? '新規タスク登録' : 'タスク編集'"></span>
         </div>
-        <div class="card-body p-4 bg-white">
+        <div class="card-body p-4">
           <form method="post" th:action="@{/tasks/save}" th:object="${task}">
             <input th:field="*{id}" type="hidden">
-
-            <div class="mb-3">
-              <label class="form-label fw-bold">カテゴリ</label>
-              <select class="form-select" th:errorclass="is-invalid" th:field="*{categoryId}">
+            <div class="mb-4">
+              <label class="form-label small fw-bold text-white">
+                <i class="bi bi-tag me-1"></i>カテゴリ選択
+              </label>
+              <select class="form-select" th:field="*{categoryId}">
                 <option value="">選択してください</option>
-                <option th:each="cat : ${categories}" th:text="${cat.name}"
-                        th:value="${cat.id}"></option>
+                <option th:each="cat : ${categories}"
+                        th:selected="${cat.id == task.categoryId}"
+                        th:text="${cat.name}"
+                        th:value="${cat.id}">
+                </option>
               </select>
-              <div class="invalid-feedback" th:errors="*{categoryId}"></div>
+              <div class="text-white-50 small mt-1">※カテゴリ一覧から追加・編集も可能です。</div>
+              <div class="text-danger" th:errors="*{categoryId}"></div>
             </div>
-
-            <div class="mb-3">
-              <label class="form-label fw-bold">タイトル</label>
-              <input class="form-control" placeholder="例: Spring Bootの学習"
-                     th:errorclass="is-invalid" th:field="*{title}" type="text">
-              <div class="invalid-feedback" th:errors="*{title}"></div>
+            <div class="mb-4">
+              <label class="form-label small fw-bold text-white">
+                <i class="bi bi-file-text me-1"></i>タスク内容
+              </label>
+              <input class="form-control" placeholder="入力してください" th:field="*{title}" type="text">
+              <div class="text-danger" th:errors="*{title}"></div>
             </div>
-
-            <div class="mb-3">
-              <label class="form-label fw-bold">期限</label>
-              <input class="form-control" th:errorclass="is-invalid" th:field="*{dueDate}"
-                     type="date">
-              <div class="invalid-feedback" th:errors="*{dueDate}"></div>
+            <div class="mb-5">
+              <label class="form-label small fw-bold text-white">
+                <i class="bi bi-calendar me-1"></i>完了予定日
+              </label>
+              <input class="form-control" th:field="*{dueDate}" type="date">
+              <div class="text-danger" th:errors="*{dueDate}"></div>
             </div>
-
-            <div class="d-grid gap-2 mt-4">
-              <button class="btn btn-primary btn-lg shadow-sm fw-bold" th:text="${task.id == null} ? '登録する' : '更新する'"
+            <div class="d-grid gap-3">
+              <button class="btn btn-aero-blue btn-lg" th:text="${task.id == null} ? '登録する' : '更新する'"
                       type="submit"></button>
-              <a class="btn btn-outline-secondary" th:href="@{/tasks}">キャンセルして一覧に戻る</a>
+              <a class="btn btn-outline-light btn-sm" th:href="@{/tasks}">一覧に戻る</a>
             </div>
           </form>
         </div>

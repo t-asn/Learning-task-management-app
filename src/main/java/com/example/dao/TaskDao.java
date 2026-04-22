@@ -2,10 +2,12 @@ package com.example.dao;
 
 import com.example.model.Task;
 import com.example.model.TaskWithCategoryRow;
+
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -13,15 +15,20 @@ import java.util.Optional;
 public interface TaskDao extends CrudRepository<Task, Integer> {
 
   @Query("""
-        SELECT t.id, t.title, t.category_id, c.name AS category_name, t.due_date, t.status 
-        FROM tasks t INNER JOIN categories c ON t.category_id = c.id 
-        ORDER BY t.id ASC LIMIT :limit OFFSET :offset
-        """)
-  List<TaskWithCategoryRow> findByPageWithCategory(@Param("limit") int limit, @Param("offset") int offset);
+      SELECT t.*, c.name as category_name 
+      FROM tasks t 
+      JOIN categories c ON t.category_id = c.id 
+      ORDER BY t.id DESC 
+      LIMIT :size OFFSET :offset
+      """)
+  List<TaskWithCategoryRow> findByPageWithCategory(int size, int offset);
 
   @Query("SELECT * FROM tasks WHERE id = :id FOR UPDATE")
   Optional<Task> findByIdForUpdate(@Param("id") Integer id);
 
   @Query("SELECT COUNT(*) FROM tasks")
   long countAll();
+
+  @Query("SELECT * FROM tasks WHERE category_id = :categoryId ORDER BY due_date ASC")
+  List<Task> findByCategoryId(Integer categoryId);
 }
