@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:latest
+    image: postgres:18.2
     container_name: postgres-container
     environment:
       POSTGRES_USER: task_admin
@@ -9,7 +9,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - task-management-db-data:/var/lib/postgresql
+      - task-management-db-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "task_admin", "-d", "taskdb"]
       interval: 5s
